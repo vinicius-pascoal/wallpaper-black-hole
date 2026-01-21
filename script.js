@@ -17,14 +17,20 @@ window.addEventListener('resize', resizeCanvas);
 // Configurações do Buraco Negro
 let config = {
   blackHoleMass: 150,
-  particleCount: 2000,
+  particleCount: 300,
   gravityStrength: 500,
   lensStrength: 50,
   accretionSpeed: 5,
   distortionEnabled: true,
   infiniteZoom: true,
   eventHorizon: 80,
-  schwarzschildRadius: 60
+  schwarzschildRadius: 60,
+  // Novos recursos avançados
+  relativisticJets: true,
+  hawkingRadiation: true,
+  ergosphere: true,
+  frameDragging: true,
+  timeDilation: true
 };
 
 // Sistema de Partículas
@@ -251,6 +257,203 @@ class AccretionDisk {
 }
 
 let accretionDisk = new AccretionDisk();
+
+// Ergosfera (região onde o espaço-tempo é arrastado)
+function drawErgosphere() {
+  if (!config.ergosphere) return;
+
+  const ergosphereRadius = config.eventHorizon * 1.2;
+
+  // Anel da ergosfera com pulsação
+  const pulse = Math.sin(Date.now() * 0.002) * 0.1 + 0.9;
+
+  const ergosphereGradient = ctx.createRadialGradient(
+    centerX, centerY, ergosphereRadius - 10,
+    centerX, centerY, ergosphereRadius + 10
+  );
+
+  ergosphereGradient.addColorStop(0, `rgba(100, 50, 200, ${0.15 * pulse})`);
+  ergosphereGradient.addColorStop(0.5, `rgba(150, 100, 255, ${0.25 * pulse})`);
+  ergosphereGradient.addColorStop(1, `rgba(100, 50, 200, ${0.1 * pulse})`);
+
+  ctx.beginPath();
+  ctx.arc(centerX, centerY, ergosphereRadius, 0, Math.PI * 2);
+  ctx.strokeStyle = ergosphereGradient;
+  ctx.lineWidth = 8;
+  ctx.shadowBlur = 20 * pulse;
+  ctx.shadowColor = 'rgba(150, 100, 255, 0.5)';
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+}
+
+// Jatos Relativísticos (Relativistic Jets)
+class RelativisticJet {
+  constructor() {
+    this.particles = [];
+    this.maxParticles = 50;
+    this.angle = 0;
+  }
+
+  update() {
+    // Criar novas partículas nos polos
+    if (this.particles.length < this.maxParticles && Math.random() < 0.3) {
+      // Jato superior
+      this.particles.push({
+        x: centerX,
+        y: centerY,
+        vx: (Math.random() - 0.5) * 2,
+        vy: -5 - Math.random() * 5,
+        life: 1.0,
+        size: Math.random() * 3 + 1,
+        hue: 180 + Math.random() * 40
+      });
+
+      // Jato inferior
+      this.particles.push({
+        x: centerX,
+        y: centerY,
+        vx: (Math.random() - 0.5) * 2,
+        vy: 5 + Math.random() * 5,
+        life: 1.0,
+        size: Math.random() * 3 + 1,
+        hue: 180 + Math.random() * 40
+      });
+    }
+
+    // Atualizar partículas dos jatos
+    this.particles = this.particles.filter(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy *= 0.99; // Leve desaceleração
+      p.life -= 0.01;
+      return p.life > 0 && p.y > -100 && p.y < height + 100;
+    });
+  }
+
+  draw() {
+    this.particles.forEach(p => {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctx.fillStyle = `hsla(${p.hue}, 80%, 60%, ${p.life * 0.8})`;
+      ctx.shadowBlur = 15;
+      ctx.shadowColor = `hsla(${p.hue}, 100%, 70%, ${p.life})`;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+
+      // Trail do jato
+      ctx.beginPath();
+      ctx.moveTo(p.x, p.y);
+      ctx.lineTo(p.x - p.vx * 2, p.y - p.vy * 2);
+      ctx.strokeStyle = `hsla(${p.hue}, 80%, 60%, ${p.life * 0.3})`;
+      ctx.lineWidth = p.size * 0.5;
+      ctx.stroke();
+    });
+  }
+}
+
+let relativisticJets = new RelativisticJet();
+
+// Radiação Hawking (partículas quânticas sendo emitidas)
+class HawkingRadiation {
+  constructor() {
+    this.particles = [];
+    this.maxParticles = 30;
+  }
+
+  update() {
+    // Criar novas partículas no horizonte de eventos
+    if (this.particles.length < this.maxParticles && Math.random() < 0.2) {
+      const angle = Math.random() * Math.PI * 2;
+      const radius = config.eventHorizon;
+
+      this.particles.push({
+        x: centerX + Math.cos(angle) * radius,
+        y: centerY + Math.sin(angle) * radius,
+        vx: Math.cos(angle) * 0.5,
+        vy: Math.sin(angle) * 0.5,
+        life: 1.0,
+        size: Math.random() * 1.5 + 0.5,
+        hue: Math.random() * 360
+      });
+    }
+
+    // Atualizar partículas
+    this.particles = this.particles.filter(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.life -= 0.015;
+      return p.life > 0;
+    });
+  }
+
+  draw() {
+    this.particles.forEach(p => {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctx.fillStyle = `hsla(${p.hue}, 100%, 70%, ${p.life * 0.6})`;
+      ctx.shadowBlur = 10;
+      ctx.shadowColor = `hsla(${p.hue}, 100%, 80%, ${p.life})`;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+    });
+  }
+}
+
+let hawkingRadiation = new HawkingRadiation();
+
+// Frame Dragging (arrasto do espaço-tempo)
+function drawFrameDragging() {
+  if (!config.frameDragging) return;
+
+  const time = Date.now() * 0.0005;
+  const numSpirals = 8;
+  const maxRadius = config.eventHorizon * 2;
+
+  for (let i = 0; i < numSpirals; i++) {
+    const baseAngle = (i / numSpirals) * Math.PI * 2 + time;
+
+    ctx.beginPath();
+    for (let r = config.eventHorizon; r < maxRadius; r += 5) {
+      const spiralTightness = 0.05;
+      const angle = baseAngle + (maxRadius - r) * spiralTightness;
+      const x = centerX + Math.cos(angle) * r;
+      const y = centerY + Math.sin(angle) * r;
+
+      if (r === config.eventHorizon) {
+        ctx.moveTo(x, y);
+      } else {
+        ctx.lineTo(x, y);
+      }
+    }
+
+    const opacity = 0.1 * (1 - (i / numSpirals) * 0.5);
+    ctx.strokeStyle = `rgba(200, 150, 255, ${opacity})`;
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  }
+}
+
+// Time Dilation Effect (efeito visual de dilatação temporal)
+function applyTimeDilation() {
+  if (!config.timeDilation) return;
+
+  // Criar efeito de distorção temporal próximo ao horizonte
+  const distortionRadius = config.eventHorizon * 1.8;
+
+  const gradient = ctx.createRadialGradient(
+    centerX, centerY, config.eventHorizon,
+    centerX, centerY, distortionRadius
+  );
+
+  const pulse = Math.sin(Date.now() * 0.003) * 0.3 + 0.7;
+
+  gradient.addColorStop(0, `rgba(100, 200, 255, ${0.05 * pulse})`);
+  gradient.addColorStop(0.5, `rgba(150, 150, 255, ${0.03 * pulse})`);
+  gradient.addColorStop(1, 'rgba(100, 100, 200, 0)');
+
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, width, height);
+}
 
 // Buraco Negro (Event Horizon)
 function drawBlackHole() {
@@ -509,15 +712,42 @@ function animate() {
   // Desenhar distorção do background
   drawDistortedBackground();
 
+  // Frame Dragging (antes do disco)
+  if (config.frameDragging) {
+    drawFrameDragging();
+  }
+
   // Atualizar e desenhar disco de acreção
   accretionDisk.update();
   accretionDisk.draw();
+
+  // Ergosfera
+  if (config.ergosphere) {
+    drawErgosphere();
+  }
 
   // Atualizar e desenhar partículas
   particles.forEach(particle => {
     particle.update();
     particle.draw();
   });
+
+  // Jatos Relativísticos
+  if (config.relativisticJets) {
+    relativisticJets.update();
+    relativisticJets.draw();
+  }
+
+  // Radiação Hawking
+  if (config.hawkingRadiation) {
+    hawkingRadiation.update();
+    hawkingRadiation.draw();
+  }
+
+  // Time Dilation Effect
+  if (config.timeDilation) {
+    applyTimeDilation();
+  }
 
   // Desenhar buraco negro (por último para ficar na frente)
   drawBlackHole();
@@ -595,24 +825,55 @@ function setupControls() {
     config.infiniteZoom = e.target.checked;
   });
 
+  // Novos controles para efeitos avançados
+  const relativisticJetsToggle = document.getElementById('relativisticJets');
+  relativisticJetsToggle.addEventListener('change', (e) => {
+    config.relativisticJets = e.target.checked;
+  });
+
+  const hawkingRadiationToggle = document.getElementById('hawkingRadiation');
+  hawkingRadiationToggle.addEventListener('change', (e) => {
+    config.hawkingRadiation = e.target.checked;
+  });
+
+  const ergosphereToggle = document.getElementById('ergosphere');
+  ergosphereToggle.addEventListener('change', (e) => {
+    config.ergosphere = e.target.checked;
+  });
+
+  const frameDraggingToggle = document.getElementById('frameDragging');
+  frameDraggingToggle.addEventListener('change', (e) => {
+    config.frameDragging = e.target.checked;
+  });
+
+  const timeDilationToggle = document.getElementById('timeDilation');
+  timeDilationToggle.addEventListener('change', (e) => {
+    config.timeDilation = e.target.checked;
+  });
+
   const resetBtn = document.getElementById('resetBtn');
   resetBtn.addEventListener('click', () => {
     config = {
       blackHoleMass: 150,
-      particleCount: 2000,
+      particleCount: 300,
       gravityStrength: 500,
       lensStrength: 50,
       accretionSpeed: 5,
       distortionEnabled: true,
       infiniteZoom: true,
       eventHorizon: 80,
-      schwarzschildRadius: 60
+      schwarzschildRadius: 60,
+      relativisticJets: true,
+      hawkingRadiation: true,
+      ergosphere: true,
+      frameDragging: true,
+      timeDilation: true
     };
 
     massSlider.value = 150;
     massValue.textContent = '150';
-    particleCount.value = 2000;
-    particleValue.textContent = '2000';
+    particleCount.value = 300;
+    particleValue.textContent = '300';
     gravityStrength.value = 500;
     gravityValue.textContent = '500';
     lensStrength.value = 50;
@@ -621,6 +882,11 @@ function setupControls() {
     accretionValue.textContent = '5';
     distortionToggle.checked = true;
     infiniteZoom.checked = true;
+    relativisticJetsToggle.checked = true;
+    hawkingRadiationToggle.checked = true;
+    ergosphereToggle.checked = true;
+    frameDraggingToggle.checked = true;
+    timeDilationToggle.checked = true;
 
     initParticles();
     accretionDisk = new AccretionDisk();
@@ -638,7 +904,7 @@ function setupControls() {
   toggleBtn.addEventListener('click', (e) => {
     e.stopPropagation();
     controlsLocked = !controlsLocked;
-    
+
     if (controlsLocked) {
       // Travar aberto
       controlPanel.classList.remove('hidden');

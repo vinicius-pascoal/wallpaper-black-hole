@@ -95,10 +95,6 @@ wallpaper-black-hole/
 └── README.md       # Este arquivo
 ```
 
-## 🌟 Créditos
-
-Desenvolvido com 💜 usando conceitos de física astrofísica e computação gráfica.
-
 ## 📜 Licença
 
 Livre para uso pessoal e educacional.

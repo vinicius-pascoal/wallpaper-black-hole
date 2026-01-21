@@ -105,15 +105,66 @@
 
 ---
 
-## 🚀 Próximas Melhorias Sugeridas
+## ✨ Versão 3.0 - Efeitos Avançados Implementados (Janeiro 2026)
 
-- [ ] Relativistic jets (jatos polares)
-- [ ] Lente gravitacional real (Einstein ring)
-- [ ] Radiação Hawking animada
-- [ ] Frame dragging visualization
-- [ ] Ergosphere highlight
-- [ ] Time dilation effect
+### 🌌 **Jatos Relativísticos**
+- ✅ Partículas sendo ejetadas pelos polos do buraco negro
+- ✅ Velocidade relativística (5-10x mais rápida que partículas normais)
+- ✅ Trail effect para visualizar o movimento
+- ✅ Cores azuladas (180-220 hue) para representar alta energia
+- ✅ Até 50 partículas por jato
+
+### 💫 **Radiação Hawking**
+- ✅ Partículas quânticas sendo emitidas do horizonte de eventos
+- ✅ Cores aleatórias representando diferentes energias
+- ✅ Emissão uniforme ao redor do horizonte
+- ✅ Efeito de fade out gradual
+- ✅ Até 30 partículas ativas
+
+### 🔮 **Ergosfera**
+- ✅ Anel roxo pulsante ao redor do horizonte de eventos
+- ✅ Localizada a 1.2x o raio do horizonte
+- ✅ Pulsação suave (0.9-1.0 amplitude)
+- ✅ Glow effect dinâmico
+- ✅ Representa a região onde o espaço-tempo é arrastado
+
+### 🌀 **Frame Dragging**
+- ✅ 8 espirais representando o arrasto do espaço-tempo
+- ✅ Animação rotacional contínua
+- ✅ Cores roxas/azuladas sutis
+- ✅ Espirais se originam no horizonte de eventos
+- ✅ Efeito visual da rotação do buraco negro
+
+### ⏱️ **Dilatação Temporal**
+- ✅ Gradiente radial pulsante
+- ✅ Cores azuis representando distorção temporal
+- ✅ Efeito mais intenso próximo ao horizonte
+- ✅ Pulsação a 0.003 rad/s
+- ✅ Visualização da desaceleração do tempo
+
+### 🎮 **Novos Controles**
+- ✅ Toggle para Jatos Relativísticos
+- ✅ Toggle para Radiação Hawking
+- ✅ Toggle para Ergosfera
+- ✅ Toggle para Frame Dragging
+- ✅ Toggle para Dilatação Temporal
+- ✅ Seção "Efeitos Avançados" no painel
 
 ---
 
-**Desenvolvido com 💜 e física astrofísica**
+## 🚀 Recursos Implementados
+
+- [x] Relativistic jets (jatos polares) ✅
+- [x] Radiação Hawking animada ✅
+- [x] Frame dragging visualization ✅
+- [x] Ergosphere highlight ✅
+- [x] Time dilation effect ✅
+
+### 🔮 Melhorias Futuras
+
+- [ ] Lente gravitacional real (Einstein ring) com ray tracing
+- [ ] Efeito Doppler nos jatos
+- [ ] Ondas gravitacionais animadas
+- [ ] Múltiplos buracos negros (sistema binário)
+
+---

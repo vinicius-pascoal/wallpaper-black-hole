@@ -56,6 +56,10 @@ body {
   padding: 25px;
   min-width: 320px;
   max-width: 380px;
+  max-height: 80vh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
   box-shadow: 0 8px 32px rgba(138, 43, 226, 0.3);
   transform: translateX(400px);
   opacity: 0;
