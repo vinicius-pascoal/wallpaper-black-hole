@@ -925,6 +925,10 @@ function setupControls() {
         handleMatrix();
         secretInput.value = '';
         secretInput.blur();
+      } else if (command === 'portal') {
+        handlePortal();
+        secretInput.value = '';
+        secretInput.blur();
       } else if (command === 'help' || command === 'ajuda') {
         showSecretHelp();
         secretInput.value = '';
@@ -1120,6 +1124,7 @@ function showSecretHelp() {
     nyan      - Nyan Cat orbita o buraco negro 🐱🌈
     tardis    - TARDIS do Doctor Who 📞
     matrix    - Modo Matrix com código caindo 💚
+    portal    - Portais laranja e azul aparecem 🔵🟠
     ajuda     - Mostra esta mensagem
   `;
 
@@ -1385,6 +1390,143 @@ function handleMatrix() {
     if (matrixNotif) matrixNotif.remove();
     canvas.style.filter = originalFilter;
   }, 8000);
+}
+
+// Easter Egg: Portal - Dois portais aparecem
+function handlePortal() {
+  console.log('🔵🟠 Now you\'re thinking with portals!');
+
+  // Portal Azul (esquerda)
+  const bluePortal = document.createElement('div');
+  bluePortal.id = 'bluePortal';
+  bluePortal.style.cssText = `
+    position: fixed;
+    left: 15%;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 80px;
+    height: 150px;
+    border: 5px solid #00aaff;
+    border-radius: 50%;
+    background: radial-gradient(ellipse at center, rgba(0, 170, 255, 0.6), rgba(0, 170, 255, 0.1));
+    box-shadow: 0 0 40px rgba(0, 170, 255, 0.8), inset 0 0 40px rgba(0, 170, 255, 0.4);
+    z-index: 9999;
+    pointer-events: none;
+    animation: portalPulse 2s ease-in-out infinite;
+  `;
+  document.body.appendChild(bluePortal);
+
+  // Portal Laranja (direita)
+  const orangePortal = document.createElement('div');
+  orangePortal.id = 'orangePortal';
+  orangePortal.style.cssText = `
+    position: fixed;
+    right: 15%;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 80px;
+    height: 150px;
+    border: 5px solid #ff8800;
+    border-radius: 50%;
+    background: radial-gradient(ellipse at center, rgba(255, 136, 0, 0.6), rgba(255, 136, 0, 0.1));
+    box-shadow: 0 0 40px rgba(255, 136, 0, 0.8), inset 0 0 40px rgba(255, 136, 0, 0.4);
+    z-index: 9999;
+    pointer-events: none;
+    animation: portalPulse 2s ease-in-out infinite;
+  `;
+  document.body.appendChild(orangePortal);
+
+  // Mensagem "The cake is a lie"
+  const cakeMsg = document.createElement('div');
+  cakeMsg.style.cssText = `
+    position: fixed;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.95);
+    color: #ff8800;
+    padding: 20px 40px;
+    border: 3px solid #00aaff;
+    border-radius: 10px;
+    font-family: 'Courier New', monospace;
+    font-size: 24px;
+    font-weight: bold;
+    z-index: 10001;
+    text-align: center;
+    box-shadow: 0 0 40px rgba(0, 170, 255, 0.8);
+    animation: portalAppear 0.5s ease;
+  `;
+  cakeMsg.innerHTML = '🎂 THE CAKE IS A LIE 🎂<br/><span style="font-size: 14px; color: #00aaff;">Now you\'re thinking with portals</span>';
+  document.body.appendChild(cakeMsg);
+
+  // Adicionar animações CSS
+  if (!document.getElementById('portalStyle')) {
+    const style = document.createElement('style');
+    style.id = 'portalStyle';
+    style.textContent = `
+      @keyframes portalPulse {
+        0%, 100% { 
+          transform: translateY(-50%) scale(1); 
+          opacity: 1;
+        }
+        50% { 
+          transform: translateY(-50%) scale(1.1); 
+          opacity: 0.8;
+        }
+      }
+      @keyframes portalAppear {
+        0% { transform: translateX(-50%) scale(0.5) rotate(10deg); opacity: 0; }
+        100% { transform: translateX(-50%) scale(1) rotate(0deg); opacity: 1; }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  // Efeito nas partículas - partículas que entram no portal azul reaparecem no laranja
+  const originalParticleUpdate = Particle.prototype.update;
+  let portalActive = true;
+
+  Particle.prototype.update = function () {
+    originalParticleUpdate.call(this);
+
+    if (portalActive) {
+      const bluePortalX = window.innerWidth * 0.15;
+      const bluePortalY = window.innerHeight * 0.5;
+      const orangePortalX = window.innerWidth * 0.85;
+      const orangePortalY = window.innerHeight * 0.5;
+      const portalRadius = 60;
+
+      // Verificar se partícula entrou no portal azul
+      const distToBlue = Math.hypot(this.x - bluePortalX, this.y - bluePortalY);
+      if (distToBlue < portalRadius) {
+        // Teleportar para portal laranja
+        this.x = orangePortalX;
+        this.y = orangePortalY;
+        this.trail = []; // Limpar rastro
+      }
+
+      // Verificar se partícula entrou no portal laranja
+      const distToOrange = Math.hypot(this.x - orangePortalX, this.y - orangePortalY);
+      if (distToOrange < portalRadius) {
+        // Teleportar para portal azul
+        this.x = bluePortalX;
+        this.y = bluePortalY;
+        this.trail = []; // Limpar rastro
+      }
+    }
+  };
+
+  // Remover após 12 segundos
+  setTimeout(() => {
+    portalActive = false;
+    Particle.prototype.update = originalParticleUpdate;
+
+    const blue = document.getElementById('bluePortal');
+    const orange = document.getElementById('orangePortal');
+    if (blue) blue.remove();
+    if (orange) orange.remove();
+    if (cakeMsg) cakeMsg.remove();
+  }, 12000);
 }
 
 // Controle de visibilidade do painel

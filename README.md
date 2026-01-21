@@ -163,6 +163,9 @@ Digite **'tardis'** para ativar o efeito **Doctor Who**. O buraco negro piscará
 #### 💚 matrix
 Digite **'matrix'** para entrar no **Modo Matrix**. Código verde cairá pela tela por 8 segundos enquanto o buraco negro ganha um filtro cibernético! "Wake up, Neo..."
 
+#### 🔵🟠 portal
+Digite **'portal'** para ativar os **Portais do Portal**. Dois portais (azul e laranja) aparecem e as partículas se teletransportam entre eles por 12 segundos! "The cake is a lie" 🎂
+
 #### ❓ ajuda
 Digite **'ajuda'** ou **'help'** para ver a lista completa de comandos disponíveis em uma notificação estilo terminal.
 
@@ -202,6 +205,7 @@ Passe o mouse no **topo central da tela** para revelar o campo de entrada secret
 - [x] **nyan** - Nyan Cat orbita o buraco negro por 10 segundos 🐱🌈
 - [x] **tardis** - Buraco negro pisca (Doctor Who) 📞
 - [x] **matrix** - Código verde caindo estilo Matrix por 8 segundos 💚
+- [x] **portal** - Dois portais aparecem e partículas se teletransportam entre eles por 12 segundos 🔵🟠
 - [x] **ajuda** - Mostra lista de comandos disponíveis
 - [x] **Gato de Schrödinger** - Partículas quânticas aparecem automaticamente a cada 2 segundos
 
