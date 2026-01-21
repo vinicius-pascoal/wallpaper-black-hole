@@ -60,20 +60,20 @@ function resizeCanvas() {
 let config = {
   currentPreset: 'custom',
   blackHoleMass: 150,
-  particleCount: 300,
+  particleCount: 50, // Reduzido para focar no disco
   gravityStrength: 500,
   lensStrength: 50,
   accretionSpeed: 5,
   distortionEnabled: true,
   infiniteZoom: true,
-  glslLens: false, // Desabilitado por padrão
+  glslLens: false,
   eventHorizon: 80,
   schwarzschildRadius: 60,
-  relativisticJets: true,
-  hawkingRadiation: true,
-  ergosphere: true,
-  frameDragging: true,
-  timeDilation: true
+  relativisticJets: false, // Desabilitado para estética M87/Interstellar
+  hawkingRadiation: false,
+  ergosphere: false,
+  frameDragging: false,
+  timeDilation: false
 };
 
 // Sistema de Partículas
@@ -200,14 +200,14 @@ class Particle {
   }
 }
 
-// Disco de Acreção
+// Disco de Acreção - Estilo Interstellar/M87
 class AccretionDisk {
   constructor() {
-    this.rings = 8;
+    this.rings = 25;
     this.particles = [];
     this.hotspots = [];
 
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 8; i++) {
       this.hotspots.push({
         angle: Math.random() * Math.PI * 2,
         speed: 0.001 + Math.random() * 0.002,
@@ -222,52 +222,103 @@ class AccretionDisk {
     });
   }
 
-  draw() {
-    const innerRadius = config.schwarzschildRadius * 1.5;
-    const outerRadius = config.schwarzschildRadius * 8;
+  drawEllipticalRing(innerRadius, outerRadius, ring, totalRings, time, verticalSign) {
+    const t = ring / totalRings;
+    const radius = innerRadius + (outerRadius - innerRadius) * t;
+    const nextRadius = innerRadius + (outerRadius - innerRadius) * ((ring + 1) / totalRings);
 
-    for (let ring = 0; ring < this.rings; ring++) {
-      const radius = innerRadius + (outerRadius - innerRadius) * (ring / this.rings);
-      const nextRadius = innerRadius + (outerRadius - innerRadius) * ((ring + 1) / this.rings);
+    const temperature = 1 - t;
 
-      const temperature = 1 - (ring / this.rings);
+    // Achatamento extremo do disco (perspectiva elíptica)
+    const flatteningRatio = 0.18;
+    const verticalRadius = radius * flatteningRatio;
+    const nextVerticalRadius = nextRadius * flatteningRatio;
 
-      let r, g, b;
-      if (temperature > 0.7) {
-        r = 255; g = 255; b = 200 + temperature * 55;
-      } else if (temperature > 0.4) {
-        r = 255; g = 150 + temperature * 105; b = 0;
-      } else {
-        r = 200 + temperature * 55; g = 0; b = 0;
-      }
+    // Offset vertical para separar disco superior/inferior
+    const verticalOffset = verticalSign * config.schwarzschildRadius * 0.3;
 
-      const gradient = ctx.createRadialGradient(centerX, centerY, radius, centerX, centerY, nextRadius);
-      gradient.addColorStop(0, `rgba(${r}, ${g}, ${b}, ${0.3 * temperature})`);
-      gradient.addColorStop(1, `rgba(${r}, ${g}, ${b}, ${0.1 * temperature})`);
+    // Cores laranja/vermelho intenso estilo M87
+    let r, g, b, opacity;
+    if (temperature > 0.7) {
+      r = 255;
+      g = 200 + temperature * 55;
+      b = 100 + temperature * 50;
+      opacity = (0.7 + temperature * 0.3) * (verticalSign > 0 ? 0.6 : 1.0);
+    } else if (temperature > 0.4) {
+      r = 255;
+      g = 140 + temperature * 60;
+      b = 30 + temperature * 50;
+      opacity = (0.6 + temperature * 0.3) * (verticalSign > 0 ? 0.5 : 0.9);
+    } else {
+      r = 200 + temperature * 55;
+      g = 50 + temperature * 50;
+      b = 10 + temperature * 20;
+      opacity = (0.4 + temperature * 0.3) * (verticalSign > 0 ? 0.4 : 0.7);
+    }
 
+    ctx.save();
+    ctx.translate(centerX, centerY + verticalOffset);
+
+    // Desenhar anel elíptico
+    ctx.beginPath();
+    ctx.ellipse(0, 0, nextRadius, nextVerticalRadius, 0, 0, Math.PI * 2);
+    ctx.ellipse(0, 0, radius, verticalRadius, 0, 0, Math.PI * 2, true);
+
+    const gradient = ctx.createRadialGradient(0, 0, radius, 0, 0, nextRadius);
+    gradient.addColorStop(0, `rgba(${r}, ${g}, ${b}, ${opacity})`);
+    gradient.addColorStop(0.5, `rgba(${r}, ${g}, ${b}, ${opacity * 0.9})`);
+    gradient.addColorStop(1, `rgba(${r * 0.8}, ${g * 0.8}, ${b * 0.8}, ${opacity * 0.5})`);
+
+    ctx.fillStyle = gradient;
+    ctx.fill();
+
+    // Borda brilhante
+    if (temperature > 0.5) {
       ctx.beginPath();
-      ctx.arc(centerX, centerY, nextRadius, 0, Math.PI * 2);
-      ctx.arc(centerX, centerY, radius, 0, Math.PI * 2, true);
-      ctx.fillStyle = gradient;
-      ctx.fill();
+      ctx.ellipse(0, 0, radius, verticalRadius, 0, 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(255, ${200 + temperature * 55}, ${100 + temperature * 50}, ${opacity * 0.6})`;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    }
 
-      // Hotspots
-      this.hotspots.forEach(hotspot => {
-        const hotspotX = centerX + Math.cos(hotspot.angle) * radius;
-        const hotspotY = centerY + Math.sin(hotspot.angle) * radius;
-        const hotspotSize = 20 + hotspot.intensity * 30;
+    // Hotspots rotativos
+    if (ring % 2 === 0) {
+      this.hotspots.forEach((hotspot, idx) => {
+        const angle = hotspot.angle + (ring * 0.1) + time * config.accretionSpeed * 0.1;
+        const hotspotRadius = (radius + nextRadius) / 2;
+        const x = Math.cos(angle) * hotspotRadius;
+        const y = Math.sin(angle) * hotspotRadius * flatteningRatio;
 
-        const hotspotGradient = ctx.createRadialGradient(
-          hotspotX, hotspotY, 0,
-          hotspotX, hotspotY, hotspotSize
-        );
-        hotspotGradient.addColorStop(0, `rgba(255, 255, 255, ${0.6 * temperature})`);
-        hotspotGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+        const hotspotSize = (10 + hotspot.intensity * 15) * temperature;
+        const hotspotGradient = ctx.createRadialGradient(x, y, 0, x, y, hotspotSize);
+
+        hotspotGradient.addColorStop(0, `rgba(255, 255, 200, ${0.9 * temperature})`);
+        hotspotGradient.addColorStop(0.5, `rgba(${r}, ${g}, ${b}, ${0.6 * temperature})`);
+        hotspotGradient.addColorStop(1, 'rgba(255, 100, 0, 0)');
 
         ctx.fillStyle = hotspotGradient;
-        ctx.fillRect(hotspotX - hotspotSize, hotspotY - hotspotSize,
-          hotspotSize * 2, hotspotSize * 2);
+        ctx.beginPath();
+        ctx.ellipse(x, y, hotspotSize, hotspotSize * flatteningRatio, 0, 0, Math.PI * 2);
+        ctx.fill();
       });
+    }
+
+  ctx.restore();
+  }
+
+  draw() {
+    const innerRadius = config.schwarzschildRadius * 1.5;
+    const outerRadius = config.schwarzschildRadius * 4;
+    const time = Date.now() * 0.001;
+
+    // Desenhar disco achatado superior (visível acima)
+    for (let ring = 0; ring < this.rings; ring++) {
+      this.drawEllipticalRing(innerRadius, outerRadius, ring, this.rings, time, -1);
+    }
+
+    // Desenhar disco achatado inferior (efeito de dobra gravitacional)
+    for (let ring = 0; ring < this.rings; ring++) {
+      this.drawEllipticalRing(innerRadius, outerRadius, ring, this.rings, time, 1);
     }
   }
 }
@@ -346,15 +397,15 @@ class HawkingRadiation {
   }
 }
 
-// Background com estrelas
+// Background com estrelas (versão sutil)
 function drawStarField() {
   for (let i = 0; i < stars.length; i++) {
     const star = stars[i];
     star.twinkle = (star.twinkle + 0.02) % (Math.PI * 2);
-    const opacity = 0.3 + Math.sin(star.twinkle) * 0.2;
+    const opacity = 0.2 + Math.sin(star.twinkle) * 0.15;
 
     ctx.beginPath();
-    ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+    ctx.arc(star.x, star.y, star.size * 0.8, 0, Math.PI * 2);
     ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
     ctx.fill();
   }
@@ -586,11 +637,15 @@ function animate() {
   requestAnimationFrame(animate);
   time += 0.016;
 
-  // Clear
-  ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
+  // Clear com fundo mais escuro
+  const bgGradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, width);
+  bgGradient.addColorStop(0, 'rgba(5, 5, 8, 0.3)');
+  bgGradient.addColorStop(0.5, 'rgba(0, 0, 0, 0.2)');
+  bgGradient.addColorStop(1, 'rgba(0, 0, 0, 0.15)');
+  ctx.fillStyle = bgGradient;
   ctx.fillRect(0, 0, width, height);
 
-  // Stars
+  // Stars (mais sutis)
   drawStarField();
 
   // Accretion Disk
