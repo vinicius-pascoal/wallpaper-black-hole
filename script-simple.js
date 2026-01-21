@@ -2096,10 +2096,6 @@ function handlePacman() {
       from { transform: translate(-50%, -50%) rotate(180deg) translateX(320px) rotate(-180deg); }
       to { transform: translate(-50%, -50%) rotate(540deg) translateX(320px) rotate(-540deg); }
     }
-    @keyframes pacmanChomp {
-      0%, 100% { clip-path: polygon(50% 50%, 100% 0%, 100% 100%); }
-      50% { clip-path: polygon(50% 50%, 100% 20%, 100% 80%); }
-    }
     @keyframes powerBlink {
       0%, 100% { opacity: 1; background: #0088ff; }
       50% { opacity: 0.3; background: #0044aa; }
@@ -2120,28 +2116,28 @@ function handlePacman() {
     left: 50%;
     width: 60px;
     height: 60px;
-    background: #ffff00;
-    border-radius: 50%;
     z-index: 1000;
-    animation: pacmanOrbit 4s linear infinite, pacmanChomp 0.3s ease-in-out infinite;
-    clip-path: polygon(50% 50%, 100% 0%, 100% 100%);
-    box-shadow: 0 0 20px #ffff00;
+    animation: pacmanOrbit 4s linear infinite;
     pointer-events: none;
   `;
-  document.body.appendChild(pacman);
-
-  // Criar olho do Pac-Man
-  const eye = document.createElement('div');
-  eye.style.cssText = `
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    width: 8px;
-    height: 8px;
-    background: #000;
-    border-radius: 50%;
+  
+  const pacmanImg = document.createElement('img');
+  pacmanImg.src = 'imgs/pacman.gif';
+  pacmanImg.style.cssText = `
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 0 10px #ffff00);
   `;
-  pacman.appendChild(eye);
+  pacmanImg.onerror = () => {
+    console.error('Erro ao carregar pacman.gif');
+    // Fallback para círculo amarelo
+    pacman.style.background = '#ffff00';
+    pacman.style.borderRadius = '50%';
+    pacman.style.clipPath = 'polygon(50% 50%, 100% 0%, 100% 100%)';
+  };
+  
+  pacman.appendChild(pacmanImg);
+  document.body.appendChild(pacman);
 
   // Criar fantasmas coloridos
   const ghosts = [
