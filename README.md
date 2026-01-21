@@ -16,12 +16,13 @@ Um plano de fundo animado e interativo de um buraco negro com física realista, 
 - **Personalizado** - Configure seus próprios parâmetros
 
 ### 🔬 Lente Gravitacional GLSL Real
-- **Shader GLSL** para simulação precisa da deflexão da luz
+- **Shader GLSL** para simulação precisa da deflexão da luz (✅ **IMPLEMENTADO**)
 - **Métrica de Schwarzschild** - Cálculo baseado em Relatividade Geral
 - **Redshift Gravitacional** - z = 1/√(1 - rs/r) - 1
 - **Doppler Shift** - Para matéria em órbita
 - **Einstein Ring** - Anel de fótons na esfera de fótons
 - **Sombra do Buraco Negro** - Baseada nas observações do M87
+- **Ativação em tempo real** - Toggle no painel de controles
 
 ### 🔥 Efeitos Físicos Realistas
 - **Força Gravitacional**: F = G·M/r² (Física newtoniana)
@@ -68,13 +69,11 @@ Um plano de fundo animado e interativo de um buraco negro com física realista, 
 
 ## 🎨 Tecnologias Utilizadas
 
-- **WebGL** - Renderização 3D acelerada por GPU
-- **Three.js** - Framework 3D para WebGL
+- **WebGL** - Renderização acelerada por GPU para lente gravitacional
 - **GLSL Shaders** - Computação paralela na GPU
-  - Vertex Shader para geometria
-  - Fragment Shader para lente gravitacional
-  - Fragment Shader para disco de acreção
-- **HTML5 Canvas 2D** - Overlay para partículas
+  - Fragment Shader para lente gravitacional com métrica de Schwarzschild
+  - Cálculo em tempo real de deflexão da luz e redshift
+- **HTML5 Canvas 2D** - Renderização de partículas e efeitos visuais
 - **JavaScript ES6+ Modules** - Lógica e física
 - **CSS3** - Interface e animações
 - **RequestAnimationFrame** - Loop de animação otimizado (60 FPS)
@@ -162,8 +161,10 @@ float ringRadius = rs * 2.6;
 wallpaper-black-hole/
 ├── index.html          # Estrutura HTML
 ├── style.css           # Estilos e animações
-├── script-webgl.js     # Lógica principal com Three.js (ES6 Module)
-├── shaders.js          # Shaders GLSL (Vertex + Fragment)
+├── script-simple.js    # Lógica principal com Canvas 2D
+├── webgl-lens.js       # Shader GLSL para lente gravitacional
+├── shaders.js          # Shaders alternativos (backup)
+├── script-webgl.js     # Versão Three.js (experimental)
 ├── script.js           # Versão legada 2D Canvas (backup)
 └── README.md           # Este arquivo
 ```

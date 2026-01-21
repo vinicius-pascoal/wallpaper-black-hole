@@ -43,12 +43,17 @@ const canvas = document.getElementById('blackHoleCanvas');
 const ctx = canvas.getContext('2d', { willReadFrequently: true });
 
 let width, height, centerX, centerY;
+let webglLens = null;
 
 function resizeCanvas() {
   width = canvas.width = window.innerWidth;
   height = canvas.height = window.innerHeight;
   centerX = width / 2;
   centerY = height / 2;
+
+  if (webglLens) {
+    webglLens.resize(width, height);
+  }
 }
 
 // Config
@@ -576,8 +581,10 @@ function applyPreset(presetName) {
 }
 
 // Animation Loop
+let time = 0;
 function animate() {
   requestAnimationFrame(animate);
+  time += 0.016;
 
   // Clear
   ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
@@ -614,6 +621,11 @@ function animate() {
     p.update();
     p.draw();
   });
+
+  // Aplicar lente gravitacional WebGL se habilitado
+  if (config.glslLens && webglLens) {
+    webglLens.render(config, time);
+  }
 }
 
 // Setup Controls
@@ -673,7 +685,24 @@ function setupControls() {
 
   document.getElementById('glslLens').addEventListener('change', (e) => {
     config.glslLens = e.target.checked;
-    alert('Lente GLSL requer WebGL - funcionalidade em desenvolvimento');
+
+    if (!webglLens) {
+      console.log('Inicializando WebGL Lens...');
+      webglLens = new window.WebGLLens('webglCanvas');
+      if (!webglLens.gl) {
+        alert('WebGL não disponível no seu navegador. Use um navegador moderno.');
+        config.glslLens = false;
+        e.target.checked = false;
+        return;
+      }
+      webglLens.resize(width, height);
+    }
+
+    if (config.glslLens) {
+      webglLens.enable();
+    } else {
+      webglLens.disable();
+    }
   });
 
   document.getElementById('relativisticJets').addEventListener('change', (e) => {
