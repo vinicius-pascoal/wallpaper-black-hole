@@ -303,7 +303,7 @@ class AccretionDisk {
       });
     }
 
-  ctx.restore();
+    ctx.restore();
   }
 
   draw() {
@@ -826,6 +826,24 @@ window.addEventListener('resize', () => {
 
 initScene();
 setupControls();
+
+// Inicializar WebGL Lens se está marcado por padrão
+if (document.getElementById('glslLens').checked) {
+  setTimeout(() => {
+    console.log('Inicializando WebGL Lens na carga...');
+    webglLens = new window.WebGLLens('webglCanvas');
+    if (webglLens && webglLens.gl) {
+      webglLens.resize(width, height);
+      webglLens.enable();
+      config.glslLens = true;
+    } else {
+      console.error('WebGL não disponível');
+      document.getElementById('glslLens').checked = false;
+      config.glslLens = false;
+    }
+  }, 100);
+}
+
 animate();
 
 console.log('🌑 Buraco Negro inicializado com sucesso!');

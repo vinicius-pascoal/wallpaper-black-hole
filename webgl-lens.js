@@ -35,7 +35,7 @@ class WebGLLens {
             }
         `;
 
-    // Fragment Shader com Lente Gravitacional
+    // Fragment Shader com Lente Gravitacional Avançada
     const fragmentShaderSource = `
             precision mediump float;
             
@@ -50,47 +50,107 @@ class WebGLLens {
             
             #define PI 3.14159265359
             
-            // Deflexão gravitacional baseada na métrica de Schwarzschild
-            vec2 gravitationalDeflection(vec2 pos, vec2 bhPos, float rs, float strength) {
+            // Deflexão gravitacional baseada na métrica de Schwarzschild com distorção dinâmica
+            vec2 gravitationalDeflection(vec2 pos, vec2 bhPos, float rs, float strength, float time) {
                 vec2 toBlackHole = pos - bhPos;
                 float dist = length(toBlackHole);
                 
                 // Evitar singularidade
-                if (dist < rs * 0.5) {
+                if (dist < rs * 0.3) {
                     return vec2(0.0);
                 }
                 
-                // Ângulo de deflexão: δθ ≈ 2rs/b (aproximação)
-                float deflectionAngle = (2.0 * rs) / dist;
+                // Ângulo de deflexão com modulação temporal
+                float timeModulation = sin(time * 0.5) * 0.2 + 0.9;
+                float deflectionAngle = (2.5 * rs) / (dist + 0.1) * timeModulation;
                 
-                // Intensidade da deflexão diminui com a distância
-                float intensity = strength * rs / (dist * dist);
-                intensity = min(intensity, 1.0);
+                // Intensidade com atenuação suave
+                float intensity = strength * rs / (dist * dist * 0.8);
+                intensity = clamp(intensity, 0.0, 1.5);
                 
-                // Direção perpendicular
-                vec2 perpendicular = vec2(-toBlackHole.y, toBlackHole.x);
-                perpendicular = normalize(perpendicular);
+                // Direção radial e tangencial combinadas
+                vec2 radial = normalize(toBlackHole);
+                vec2 tangential = vec2(-toBlackHole.y, toBlackHole.x);
+                tangential = normalize(tangential);
                 
-                return perpendicular * deflectionAngle * intensity;
+                // Mistura direção para efeito espiral
+                float spiralFactor = sin(atan(toBlackHole.y, toBlackHole.x) + time * 0.3) * 0.3;
+                vec2 direction = mix(radial, tangential, spiralFactor + 0.5);
+                
+                return direction * deflectionAngle * intensity;
             }
             
-            // Redshift gravitacional
+            // Redshift gravitacional melhorado
             float gravitationalRedshift(float dist, float rs) {
-                float ratio = rs / max(dist, rs * 1.1);
+                float ratio = rs / max(dist, rs * 0.9);
                 ratio = clamp(ratio, 0.0, 0.95);
-                return 1.0 / sqrt(1.0 - ratio) - 1.0;
+                return 1.0 / sqrt(1.0 - ratio * 0.9) - 1.0;
             }
             
-            // Einstein Ring
-            float einsteinRing(vec2 pos, vec2 bhPos, float rs) {
+            // Aberração cromática (separação de cores)
+            vec3 chromaticAberration(sampler2D tex, vec2 uv, float dist, float rs, float aberration) {
+                float aberrationStrength = aberration * (1.0 - clamp(dist / (rs * 4.0), 0.0, 1.0));
+                
+                vec2 aberrDir = normalize(uv - 0.5) * aberrationStrength * 0.02;
+                
+                float r = texture2D(tex, uv - aberrDir * 1.5).r;
+                float g = texture2D(tex, uv).g;
+                float b = texture2D(tex, uv + aberrDir * 1.5).b;
+                
+                return vec3(r, g, b);
+            }
+            
+            // Einstein Ring com pulsação
+            float einsteinRing(vec2 pos, vec2 bhPos, float rs, float time) {
                 float dist = length(pos - bhPos);
                 float ringRadius = rs * 2.6;
-                float ringWidth = rs * 0.3;
+                float ringWidth = rs * 0.25;
+                
+                // Pulsação temporal
+                float pulse = sin(time * 1.5) * 0.1 + 0.9;
+                ringRadius *= pulse;
                 
                 float ringDist = abs(dist - ringRadius);
                 float ringIntensity = smoothstep(ringWidth, 0.0, ringDist);
                 
+                // Brilho adicional
+                ringIntensity *= (sin(time + dist * 0.01) * 0.2 + 0.8);
+                
                 return ringIntensity;
+            }
+            
+            // Amplificação gravitacional (Magnification)
+            float gravitationalMagnification(float dist, float rs) {
+                float magnif = rs / max(dist, rs * 0.5);
+                magnif = clamp(magnif * magnif, 0.5, 3.0);
+                return magnif;
+            }
+            
+            // Sombra dinâmica do buraco negro
+            float blackHoleShadow(float dist, float rs, float time) {
+                float shadowRadius = rs * 1.8;
+                float shadowEdge = rs * 0.5;
+                
+                // Efeito de "breathing"
+                float breathing = sin(time * 0.8) * 0.1 + 1.0;
+                shadowRadius *= breathing;
+                
+                float shadow = smoothstep(shadowRadius + shadowEdge, shadowRadius - shadowEdge, dist);
+                return shadow;
+            }
+            
+            // Brilho do horizonte de eventos
+            float eventHorizonGlow(float dist, float rs, float time) {
+                float glowRadius = rs * 1.1;
+                float glowWidth = rs * 0.3;
+                
+                float glowDist = abs(dist - glowRadius);
+                float glow = exp(-glowDist * glowDist / (glowWidth * glowWidth));
+                
+                // Pulsação
+                glow *= (sin(time * 2.0 + glowDist * 0.1) * 0.3 + 0.7);
+                
+                return glow;
             }
             
             void main() {
@@ -101,41 +161,56 @@ class WebGLLens {
                 
                 float dist = length(pos - bhPos);
                 
-                // Aplicar lente gravitacional
+                // Aplicar lente gravitacional com dinâmica temporal
                 vec2 deflection = gravitationalDeflection(
                     pos / u_resolution, 
                     bhPos / u_resolution, 
                     rs / u_resolution.x,
-                    u_lensStrength
+                    u_lensStrength,
+                    u_time
                 );
                 
-                vec2 lensedUV = uv + deflection * 0.15;
+                vec2 lensedUV = uv + deflection * 0.25;
                 lensedUV = clamp(lensedUV, 0.0, 1.0);
                 
-                // Amostra a textura com UV distorcido
-                vec4 color = texture2D(u_texture, lensedUV);
+                // Aplicar aberração cromática
+                vec3 colorWithAberration = chromaticAberration(u_texture, lensedUV, dist, rs, u_lensStrength * 0.5);
+                vec4 color = vec4(colorWithAberration, 1.0);
                 
-                // Aplicar redshift gravitacional
+                // Magnificação gravitacional
+                float magnif = gravitationalMagnification(dist, rs);
+                color.rgb *= magnif * 0.9;
+                
+                // Aplicar redshift gravitacional com gradação
                 float redshift = gravitationalRedshift(dist, rs);
-                color.rgb *= (1.0 - redshift * 0.3);
-                color.r += redshift * 0.2;
-                color.b -= redshift * 0.15;
+                color.r += redshift * 0.25;
+                color.g *= (1.0 - redshift * 0.15);
+                color.b -= redshift * 0.2;
                 
-                // Einstein Ring
-                float ring = einsteinRing(pos, bhPos, rs);
-                color.rgb += vec3(1.0, 0.9, 0.7) * ring * 0.3;
+                // Einstein Ring com animação
+                float ring = einsteinRing(pos, bhPos, rs, u_time);
+                color.rgb += vec3(1.0, 0.95, 0.8) * ring * 0.4;
                 
-                // Sombra do buraco negro
-                if (dist < rs * 1.5) {
-                    float shadowStrength = smoothstep(rs * 1.5, rs * 0.8, dist);
-                    color.rgb *= (1.0 - shadowStrength * 0.95);
+                // Brilho do horizonte de eventos
+                float horizonGlow = eventHorizonGlow(dist, rs, u_time);
+                color.rgb += vec3(0.9, 0.5, 0.8) * horizonGlow * 0.3;
+                
+                // Sombra do buraco negro com breathing
+                float shadow = blackHoleShadow(dist, rs, u_time);
+                color.rgb *= (1.0 - shadow * 0.98);
+                
+                // Photon sphere glow intensificado
+                if (dist > rs * 2.3 && dist < rs * 3.0) {
+                    float glowDist = abs(dist - rs * 2.6);
+                    float glow = smoothstep(rs * 0.5, 0.0, glowDist);
+                    float glowIntensity = sin(u_time * 2.0 + glowDist * 0.02) * 0.2 + 0.8;
+                    color.rgb += vec3(1.0, 0.9, 0.5) * glow * glowIntensity * 0.35;
                 }
                 
-                // Photon sphere glow
-                if (dist > rs * 2.4 && dist < rs * 2.8) {
-                    float glowDist = abs(dist - rs * 2.6);
-                    float glow = smoothstep(rs * 0.4, 0.0, glowDist);
-                    color.rgb += vec3(1.0, 0.8, 0.4) * glow * 0.2;
+                // Distorção radial adicional perto do horizonte
+                if (dist < rs * 2.0) {
+                    float radialDistort = (1.0 - dist / (rs * 2.0)) * 0.15;
+                    color.rgb += vec3(0.2, 0.1, 0.3) * radialDistort;
                 }
                 
                 gl_FragColor = color;
