@@ -213,6 +213,7 @@ Baseado em impacto visual, facilidade de implementação e diversão:
 - [x] GLITCH - Corrupção digital com RGB split e scan lines
 - [x] TESLA - Bobina de Tesla com raios elétricos
 - [x] DOOM - Pentágono vermelho demoníaco girando
+- [x] PACMAN - Pac-Man e fantasmas coloridos orbitando
 
 ### 🔜 Pendentes
 - [ ] Todos os listados acima (27 ideias)

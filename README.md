@@ -175,6 +175,9 @@ Digite **'tesla'** para ativar a **Bobina de Tesla**! Raios elétricos roxos e a
 #### 😈 doom
 Digite **'doom'** para ativar o modo **DOOM**! Um pentagrama demoníaco vermelho gira ao redor do buraco negro enquanto um filtro infernal transforma tudo em vermelho. "RIP AND TEAR!" por 8 segundos! 🔥
 
+#### 👾 pacman
+Digite **'pacman'** para ativar o clássico **Pac-Man**! O Pac-Man amarelo orbita comendo partículas enquanto 4 fantasmas coloridos (Blinky, Pinky, Inky e Clyde) o perseguem. O buraco negro pisca azul como power pellet por 15 segundos! "WAKA WAKA!" 🍒
+
 #### ❓ ajuda
 Digite **'ajuda'** ou **'help'** para ver a lista completa de comandos disponíveis em uma notificação estilo terminal.
 
@@ -218,6 +221,7 @@ Passe o mouse no **topo central da tela** para revelar o campo de entrada secret
 - [x] **glitch** - Corrupção digital extrema com RGB split e scan lines por 6 segundos 📺
 - [x] **tesla** - Bobina de Tesla com raios elétricos roxos/azuis conectando partículas por 8 segundos ⚡
 - [x] **doom** - Pentagrama demoníaco vermelho girando com filtro infernal por 8 segundos 😈
+- [x] **pacman** - Pac-Man e 4 fantasmas coloridos orbitando, buraco negro pisca azul por 15 segundos 👾
 - [x] **ajuda** - Mostra lista de comandos disponíveis
 - [x] **Gato de Schrödinger** - Partículas quânticas aparecem automaticamente a cada 2 segundos
 

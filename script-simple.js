@@ -941,6 +941,10 @@ function setupControls() {
         handleDoom();
         secretInput.value = '';
         secretInput.blur();
+      } else if (command === 'pacman') {
+        handlePacman();
+        secretInput.value = '';
+        secretInput.blur();
       } else if (command === 'help' || command === 'ajuda') {
         showSecretHelp();
         secretInput.value = '';
@@ -1140,6 +1144,7 @@ function showSecretHelp() {
     glitch    - Corrupção digital extrema 📺
     tesla     - Bobina de Tesla com raios elétricos ⚡
     doom      - RIP AND TEAR! Pentágono demoníaco 😈
+    pacman    - Pac-Man e fantasmas orbitando! 👾
     ajuda     - Mostra esta mensagem
   `;
 
@@ -1894,7 +1899,7 @@ function handleTesla() {
 
 function handleDoom() {
   console.log('😈 Easter Egg DOOM ativado!');
-  
+
   // Notificação RIP AND TEAR
   const notification = document.createElement('div');
   notification.textContent = '😈 RIP AND TEAR! 😈';
@@ -1917,7 +1922,7 @@ function handleDoom() {
     animation: doomPulse 0.5s ease-in-out infinite;
   `;
   document.body.appendChild(notification);
-  
+
   // Adicionar animação de pulsação
   const style = document.createElement('style');
   style.id = 'doomStyle';
@@ -1936,11 +1941,11 @@ function handleDoom() {
     }
   `;
   document.head.appendChild(style);
-  
+
   setTimeout(() => {
     notification.remove();
   }, 2000);
-  
+
   // Criar pentágono demoníaco girando
   const pentagonContainer = document.createElement('div');
   pentagonContainer.id = 'doomPentagon';
@@ -1955,14 +1960,14 @@ function handleDoom() {
     animation: pentagonSpin 4s linear infinite;
     pointer-events: none;
   `;
-  
+
   // Criar SVG do pentágono invertido (pentagrama)
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   svg.setAttribute('width', '400');
   svg.setAttribute('height', '400');
   svg.setAttribute('viewBox', '0 0 400 400');
   svg.style.cssText = 'filter: drop-shadow(0 0 20px #ff0000);';
-  
+
   // Criar pentagrama (estrela de 5 pontas)
   const star = document.createElementNS('http://www.w3.org/2000/svg', 'path');
   const centerX = 200;
@@ -1970,7 +1975,7 @@ function handleDoom() {
   const outerRadius = 180;
   const innerRadius = 70;
   const points = 5;
-  
+
   let path = 'M ';
   for (let i = 0; i < points * 2; i++) {
     const angle = (i * Math.PI / points) - Math.PI / 2;
@@ -1980,13 +1985,13 @@ function handleDoom() {
     path += `${x},${y} `;
   }
   path += 'Z';
-  
+
   star.setAttribute('d', path);
   star.setAttribute('fill', 'none');
   star.setAttribute('stroke', '#ff0000');
   star.setAttribute('stroke-width', '8');
   star.style.animation = 'demonGlow 1s ease-in-out infinite';
-  
+
   // Adicionar círculo externo
   const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
   circle.setAttribute('cx', '200');
@@ -1995,34 +2000,34 @@ function handleDoom() {
   circle.setAttribute('fill', 'none');
   circle.setAttribute('stroke', '#8b0000');
   circle.setAttribute('stroke-width', '6');
-  
+
   svg.appendChild(circle);
   svg.appendChild(star);
   pentagonContainer.appendChild(svg);
   document.body.appendChild(pentagonContainer);
-  
+
   // Aplicar filtro vermelho ao canvas
   const originalFilter = blackHoleCanvas.style.filter || '';
   blackHoleCanvas.style.filter = 'hue-rotate(320deg) saturate(3) brightness(0.8) contrast(1.5)';
-  
+
   // Salvar configurações originais
   const originalHawking = config.hawkingRadiation;
   const originalAccretion = config.accretionDisk;
-  
+
   // Aumentar efeitos demoníacos
   config.hawkingRadiation = true;
   config.accretionDisk = true;
-  
+
   // Modificar cores das partículas temporariamente para vermelho
   const originalParticleUpdate = Particle.prototype.update;
-  Particle.prototype.update = function(blackHole) {
+  Particle.prototype.update = function (blackHole) {
     originalParticleUpdate.call(this, blackHole);
-    
+
     // Tornar partículas vermelhas
     const redIntensity = Math.floor(200 + Math.random() * 55);
     this.color = `rgb(${redIntensity}, 0, 0)`;
   };
-  
+
   // Limpar após 8 segundos
   setTimeout(() => {
     pentagonContainer.remove();
@@ -2032,9 +2037,264 @@ function handleDoom() {
     config.hawkingRadiation = originalHawking;
     config.accretionDisk = originalAccretion;
     Particle.prototype.update = originalParticleUpdate;
-    
+
     console.log('😈 DOOM desativado');
   }, 8000);
+}
+
+function handlePacman() {
+  console.log('👾 Easter Egg PACMAN ativado!');
+
+  // Notificação
+  const notification = document.createElement('div');
+  notification.textContent = '👾 WAKA WAKA WAKA! 👾';
+  notification.style.cssText = `
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(135deg, #000000, #0000ff, #000000);
+    color: #ffff00;
+    padding: 30px 60px;
+    border-radius: 10px;
+    font-family: 'Courier New', monospace;
+    font-size: 32px;
+    font-weight: bold;
+    z-index: 10000;
+    text-shadow: 0 0 20px #ffff00;
+    border: 4px solid #0000ff;
+    box-shadow: 0 0 30px #0000ff;
+    animation: pacmanPulse 0.5s ease-in-out infinite;
+  `;
+  document.body.appendChild(notification);
+
+  // Criar estilos de animação
+  const style = document.createElement('style');
+  style.id = 'pacmanStyle';
+  style.textContent = `
+    @keyframes pacmanPulse {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); }
+      50% { transform: translate(-50%, -50%) scale(1.05); }
+    }
+    @keyframes pacmanOrbit {
+      from { transform: translate(-50%, -50%) rotate(0deg) translateX(300px) rotate(0deg); }
+      to { transform: translate(-50%, -50%) rotate(360deg) translateX(300px) rotate(-360deg); }
+    }
+    @keyframes ghostOrbit1 {
+      from { transform: translate(-50%, -50%) rotate(45deg) translateX(320px) rotate(-45deg); }
+      to { transform: translate(-50%, -50%) rotate(405deg) translateX(320px) rotate(-405deg); }
+    }
+    @keyframes ghostOrbit2 {
+      from { transform: translate(-50%, -50%) rotate(90deg) translateX(320px) rotate(-90deg); }
+      to { transform: translate(-50%, -50%) rotate(450deg) translateX(320px) rotate(-450deg); }
+    }
+    @keyframes ghostOrbit3 {
+      from { transform: translate(-50%, -50%) rotate(135deg) translateX(320px) rotate(-135deg); }
+      to { transform: translate(-50%, -50%) rotate(495deg) translateX(320px) rotate(-495deg); }
+    }
+    @keyframes ghostOrbit4 {
+      from { transform: translate(-50%, -50%) rotate(180deg) translateX(320px) rotate(-180deg); }
+      to { transform: translate(-50%, -50%) rotate(540deg) translateX(320px) rotate(-540deg); }
+    }
+    @keyframes pacmanChomp {
+      0%, 100% { clip-path: polygon(50% 50%, 100% 0%, 100% 100%); }
+      50% { clip-path: polygon(50% 50%, 100% 20%, 100% 80%); }
+    }
+    @keyframes powerBlink {
+      0%, 100% { opacity: 1; background: #0088ff; }
+      50% { opacity: 0.3; background: #0044aa; }
+    }
+  `;
+  document.head.appendChild(style);
+
+  setTimeout(() => {
+    notification.remove();
+  }, 2000);
+
+  // Criar Pac-Man
+  const pacman = document.createElement('div');
+  pacman.id = 'pacmanCharacter';
+  pacman.style.cssText = `
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 60px;
+    height: 60px;
+    background: #ffff00;
+    border-radius: 50%;
+    z-index: 1000;
+    animation: pacmanOrbit 4s linear infinite, pacmanChomp 0.3s ease-in-out infinite;
+    clip-path: polygon(50% 50%, 100% 0%, 100% 100%);
+    box-shadow: 0 0 20px #ffff00;
+    pointer-events: none;
+  `;
+  document.body.appendChild(pacman);
+
+  // Criar olho do Pac-Man
+  const eye = document.createElement('div');
+  eye.style.cssText = `
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 8px;
+    height: 8px;
+    background: #000;
+    border-radius: 50%;
+  `;
+  pacman.appendChild(eye);
+
+  // Criar fantasmas coloridos
+  const ghosts = [
+    { name: 'Blinky', color: '#ff0000', delay: 0, animation: 'ghostOrbit1' },
+    { name: 'Pinky', color: '#ffb8ff', delay: 0, animation: 'ghostOrbit2' },
+    { name: 'Inky', color: '#00ffff', delay: 0, animation: 'ghostOrbit3' },
+    { name: 'Clyde', color: '#ffb851', delay: 0, animation: 'ghostOrbit4' }
+  ];
+
+  const ghostElements = [];
+
+  ghosts.forEach((ghostData, index) => {
+    const ghost = document.createElement('div');
+    ghost.className = 'pacman-ghost';
+    ghost.style.cssText = `
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      width: 50px;
+      height: 60px;
+      background: ${ghostData.color};
+      border-radius: 50% 50% 0 0;
+      z-index: 999;
+      animation: ${ghostData.animation} 4s linear infinite;
+      box-shadow: 0 0 15px ${ghostData.color};
+      pointer-events: none;
+    `;
+
+    // Adicionar ondulações na parte inferior
+    const bottom = document.createElement('div');
+    bottom.style.cssText = `
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 10px;
+      background: ${ghostData.color};
+      clip-path: polygon(0 0, 25% 100%, 50% 0, 75% 100%, 100% 0, 100% 100%, 0 100%);
+    `;
+    ghost.appendChild(bottom);
+
+    // Adicionar olhos
+    const eyes = document.createElement('div');
+    eyes.style.cssText = `
+      position: absolute;
+      top: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+    `;
+
+    for (let i = 0; i < 2; i++) {
+      const eyeWhite = document.createElement('div');
+      eyeWhite.style.cssText = `
+        width: 12px;
+        height: 16px;
+        background: #fff;
+        border-radius: 50% 50% 40% 40%;
+        position: relative;
+      `;
+
+      const eyePupil = document.createElement('div');
+      eyePupil.style.cssText = `
+        position: absolute;
+        bottom: 2px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 6px;
+        height: 8px;
+        background: #0000ff;
+        border-radius: 50%;
+      `;
+
+      eyeWhite.appendChild(eyePupil);
+      eyes.appendChild(eyeWhite);
+    }
+
+    ghost.appendChild(eyes);
+    document.body.appendChild(ghost);
+    ghostElements.push(ghost);
+  });
+
+  // Power Pellet - fazer buraco negro piscar azul
+  let blinkCount = 0;
+  const maxBlinks = 30;
+  const originalFilter = blackHoleCanvas.style.filter || '';
+
+  const blinkInterval = setInterval(() => {
+    if (blinkCount >= maxBlinks) {
+      clearInterval(blinkInterval);
+      blackHoleCanvas.style.filter = originalFilter;
+      return;
+    }
+
+    if (blinkCount % 2 === 0) {
+      blackHoleCanvas.style.filter = 'hue-rotate(200deg) saturate(2) brightness(1.5)';
+    } else {
+      blackHoleCanvas.style.filter = 'hue-rotate(210deg) saturate(1.5) brightness(1.2)';
+    }
+
+    blinkCount++;
+  }, 500);
+
+  // Fazer partículas serem "comidas"
+  const originalParticleUpdate = Particle.prototype.update;
+  let eatenCount = 0;
+
+  Particle.prototype.update = function (blackHole) {
+    originalParticleUpdate.call(this, blackHole);
+
+    // Chance aleatória de partícula ser "comida" e piscar
+    if (Math.random() < 0.02) {
+      this.color = '#ffff00';
+      this.radius = Math.max(1, this.radius * 0.8);
+      eatenCount++;
+    }
+  };
+
+  // Adicionar contador de pontos
+  const scoreDisplay = document.createElement('div');
+  scoreDisplay.style.cssText = `
+    position: fixed;
+    top: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Courier New', monospace;
+    font-size: 28px;
+    font-weight: bold;
+    color: #ffff00;
+    text-shadow: 0 0 10px #ffff00, 0 0 20px #0000ff;
+    z-index: 10000;
+    pointer-events: none;
+  `;
+  document.body.appendChild(scoreDisplay);
+
+  const scoreInterval = setInterval(() => {
+    scoreDisplay.textContent = `SCORE: ${eatenCount * 10}`;
+  }, 100);
+
+  // Limpar após 15 segundos
+  setTimeout(() => {
+    pacman.remove();
+    ghostElements.forEach(ghost => ghost.remove());
+    scoreDisplay.remove();
+    const pacmanStyle = document.getElementById('pacmanStyle');
+    if (pacmanStyle) pacmanStyle.remove();
+    clearInterval(blinkInterval);
+    clearInterval(scoreInterval);
+    blackHoleCanvas.style.filter = originalFilter;
+    Particle.prototype.update = originalParticleUpdate;
+
+    console.log('👾 PACMAN desativado - Score final: ' + (eatenCount * 10));
+  }, 15000);
 }
 
 // Controle de visibilidade do painel
