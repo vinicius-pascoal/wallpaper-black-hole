@@ -12,10 +12,24 @@ body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+#container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
 #blackHoleCanvas {
   display: block;
   width: 100%;
   height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  pointer-events: none;
   background: radial-gradient(ellipse at center,
       rgba(15, 5, 30, 1) 0%,
       rgba(8, 3, 20, 1) 30%,
@@ -106,6 +120,30 @@ body {
 
 .control-group .icon {
   font-size: 18px;
+}
+
+.preset-select {
+  width: 100%;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(138, 43, 226, 0.5);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 13px;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.3s;
+}
+
+.preset-select:hover {
+  border-color: rgba(138, 43, 226, 0.9);
+  box-shadow: 0 0 10px rgba(138, 43, 226, 0.5);
+}
+
+.preset-select option {
+  background: #1a0033;
+  color: #fff;
+  padding: 10px;
 }
 
 .control-group input[type="range"] {

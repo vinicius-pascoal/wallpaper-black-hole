@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div id="container"></div>
     <canvas id="blackHoleCanvas"></canvas>
     
     <!-- Controles -->
@@ -54,6 +55,22 @@
                 <span id="accretionValue">5</span>
             </div>
             
+            <hr style="border: 1px solid rgba(138, 43, 226, 0.3); margin: 20px 0;">
+            
+            <h3 style="color: #8a2be2; font-size: 14px; margin-bottom: 15px; text-align: center;">🌌 Presets de Buracos Negros</h3>
+            
+            <div class="control-group">
+                <label for="presetSelector">
+                    <span class="icon">🎯</span> Selecione um Buraco Negro
+                </label>
+                <select id="presetSelector" class="preset-select">
+                    <option value="custom">🎨 Personalizado</option>
+                    <option value="sagittarius">🌟 Sagittarius A* (Centro da Via Láctea)</option>
+                    <option value="m87">🔥 M87* (Primeira Imagem Real)</option>
+                    <option value="cygnus">🦢 Cygnus X-1 (Binário de Raio-X)</option>
+                </select>
+            </div>
+            
             <div class="control-group checkbox-group">
                 <label>
                     <input type="checkbox" id="distortionToggle" checked>
@@ -65,6 +82,13 @@
                 <label>
                     <input type="checkbox" id="infiniteZoom" checked>
                     <span>♾️ Zoom Infinito</span>
+                </label>
+            </div>
+            
+            <div class="control-group checkbox-group">
+                <label>
+                    <input type="checkbox" id="glslLens" checked>
+                    <span>🔬 Lente Gravitacional GLSL</span>
                 </label>
             </div>
             
@@ -113,6 +137,7 @@
         <button id="toggleControls" class="toggle-btn" title="Clique para travar aberto">⚙️</button>
     </div>
     
-    <script src="script.js"></script>
+    <script type="module" src="script-simple.js"></script>
 </body>
+</html>
 </html>
