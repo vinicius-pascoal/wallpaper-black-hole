@@ -1,44 +1,44 @@
 # 🌑 Buraco Negro Realista - Wallpaper Interativo
 
-Um plano de fundo animado e interativo de um buraco negro com física realista, disco de acreção, efeitos gravitacionais e fenômenos astrofísicos avançados. Agora com **WebGL/Three.js** e **shaders GLSL** para lente gravitacional real!
+Um plano de fundo animado e interativo de um buraco negro com física realista, disco de acreção estilo M87/Interstellar, efeitos gravitacionais avançados e lente gravitacional GLSL em tempo real.
 
-![Preview](https://img.shields.io/badge/Status-Completo-success)
-![Tech](https://img.shields.io/badge/Tech-WebGL%20%7C%20Three.js%20%7C%20GLSL-blue)
+![Status](https://img.shields.io/badge/Status-Completo-success)
+![Tech](https://img.shields.io/badge/Tech-Canvas%202D%20%7C%20WebGL-blue)
 ![Physics](https://img.shields.io/badge/Physics-Relatividade%20Geral-purple)
-![Shaders](https://img.shields.io/badge/Shaders-GLSL-orange)
+![Performance](https://img.shields.io/badge/Performance-60%20FPS-green)
 
 ## ✨ Características Principais
 
 ### 🌌 Presets de Buracos Negros Famosos
-- **Sagittarius A*** - Buraco negro supermassivo no centro da Via Láctea (4.1 milhões de massas solares)
-- **M87*** - Primeiro buraco negro fotografado pela Event Horizon Telescope (6.5 bilhões de massas solares)
-- **Cygnus X-1** - Sistema binário de raio-X, primeiro buraco negro estelar confirmado (21 massas solares)
+- **Sagittarius A*** - Buraco negro supermassivo no centro da Via Láctea
+- **M87*** - Primeiro buraco negro fotografado pela Event Horizon Telescope
+- **Cygnus X-1** - Sistema binário de raio-X, primeiro buraco negro estelar confirmado
 - **Personalizado** - Configure seus próprios parâmetros
 
-### 🔬 Lente Gravitacional GLSL Real
-- **Shader GLSL** para simulação precisa da deflexão da luz (✅ **IMPLEMENTADO**)
-- **Métrica de Schwarzschild** - Cálculo baseado em Relatividade Geral
-- **Redshift Gravitacional** - z = 1/√(1 - rs/r) - 1
-- **Doppler Shift** - Para matéria em órbita
-- **Einstein Ring** - Anel de fótons na esfera de fótons
-- **Sombra do Buraco Negro** - Baseada nas observações do M87
-- **Ativação em tempo real** - Toggle no painel de controles
+### 🔬 Lente Gravitacional GLSL Avançada
+- **Shader GLSL otimizado** com efeitos visuais aprimorados
+- **Aberração Cromática** - Separação RGB para efeito arco-íris
+- **Magnificação Gravitacional** - Amplificação até 3x perto do horizonte
+- **Distorção Dinâmica** - Modulação temporal com animação espiral
+- **Redshift melhorado** - Gradação de cores realista (vermelho/magenta/ouro)
+- **Brilho do Horizonte** - Glow roxo/magenta pulsante
+- **Sombra Respirante** - Efeito "breathing" na sombra do buraco negro
+- **Photon Sphere Animada** - Anel de fótons com pulsação temporal
 
 ### 🔥 Efeitos Físicos Realistas
 - **Força Gravitacional**: F = G·M/r² (Física newtoniana)
-- **Disco de Acreção**: 8 anéis concêntricos com rotação diferencial e hotspots
-- **Partículas Dinâmicas**: Sistema otimizado com 200-5000 partículas (padrão: 300)
+- **Disco de Acreção**: 25 anéis concêntricos com rotação diferencial e hotspots
+- **Partículas Dinâmicas**: Sistema otimizado com 50-5000 partículas
 - **Event Horizon**: Horizonte de eventos com sombra baseada no M87
 - **Photon Sphere**: Esfera de fótons com Einstein Ring
 - **Redshift Gravitacional**: Mudança de cor baseada na distância
 - **Spaghettification**: Alongamento de partículas próximas ao horizonte
 
 ### 🚀 Efeitos Astrofísicos Avançados
-- **🌌 Jatos Relativísticos** - Partículas ejetadas pelos polos a velocidades relativísticas
+- **🌌 Jatos Relativísticos** - Partículas ejetadas pelos polos
 - **💫 Radiação Hawking** - Emissão quântica no horizonte de eventos
 - **🔮 Ergosfera** - Região pulsante onde o espaço-tempo é arrastado
 - **🌀 Frame Dragging** - Espirais representando arrasto do espaço-tempo
-- **⏱️ Dilatação Temporal** - Visualização da desaceleração do tempo
 
 ### 🎮 Controles Interativos
 | Controle | Função | Range |
@@ -51,14 +51,12 @@ Um plano de fundo animado e interativo de um buraco negro com física realista, 
 | 💫 Velocidade | Rotação do disco | 1-20 |
 
 **Efeitos Ativados/Desativados:**
-- 🌊 Distorção do Background
 - ♾️ Zoom Infinito
 - 🔬 Lente Gravitacional GLSL
 - 🌌 Jatos Relativísticos
 - 💫 Radiação Hawking
 - 🔮 Ergosfera
 - 🌀 Frame Dragging
-- ⏱️ Dilatação Temporal
 
 ## 🚀 Como Usar
 
@@ -69,13 +67,11 @@ Um plano de fundo animado e interativo de um buraco negro com física realista, 
 
 ## 🎨 Tecnologias Utilizadas
 
+- **HTML5 Canvas 2D** - Renderização otimizada de partículas e disco de acreção
 - **WebGL** - Renderização acelerada por GPU para lente gravitacional
-- **GLSL Shaders** - Computação paralela na GPU
-  - Fragment Shader para lente gravitacional com métrica de Schwarzschild
-  - Cálculo em tempo real de deflexão da luz e redshift
-- **HTML5 Canvas 2D** - Renderização de partículas e efeitos visuais
-- **JavaScript ES6+ Modules** - Lógica e física
-- **CSS3** - Interface e animações
+- **GLSL Shaders** - Computação paralela na GPU com efeitos dinâmicos
+- **JavaScript ES6+** - Lógica, física e interatividade
+- **CSS3** - Interface responsiva e animações
 - **RequestAnimationFrame** - Loop de animação otimizado (60 FPS)
 
 ## 📊 Performance
@@ -87,110 +83,63 @@ Um plano de fundo animado e interativo de um buraco negro com física realista, 
   - Canvas com `willReadFrequently`
   - Renderização condicional
 
-## 🔬 Física Implementada
+## 📝 Estrutura de Arquivos
 
-### Lente Gravitacional (Relatividade Geral)
-**GLSL Shader implementando a Métrica de Schwarzschild:**
-```glsl
-// Ângulo de deflexão: δθ ≈ 4GM/c²b
-// Simplificado: δθ ≈ 2rs/b
-float deflectionAngle = (2.0 * rs) / dist;
 ```
-
-### Redshift Gravitacional
-```glsl
-// z = 1/sqrt(1 - rs/r) - 1
-float ratio = rs / max(dist, rs * 1.1);
-float redshift = 1.0 / sqrt(1.0 - ratio) - 1.0;
-```
-
-### Força Gravitacional (Newtoniana)
-```javascript
-F = (G * M) / r²
-```
-Onde:
-- G = Constante gravitacional (configurável)
-- M = Massa do buraco negro
-- r = Distância ao centro
-
-### Movimento Orbital Kepleriano
-```glsl
-// Velocidade orbital: v ≈ sqrt(GM/r)
-float orbitalVel = sqrt(rs / dist);
-```
-
-### Schwarzschild Radius
-```javascript
-r_s = 2GM/c² ≈ 60 * (M / 150)
-```
-
-### Einstein Ring
-```glsl
-// Raio do anel de fótons: r_photon ≈ 2.6 * r_s
-float ringRadius = rs * 2.6;
+wallpaper-black-hole/
+├── index.html        # Estrutura HTML e controles
+├── style.css         # Estilos CSS e animações
+├── script-simple.js  # Lógica principal com Canvas 2D + física
+├── webgl-lens.js     # Shader GLSL para lente gravitacional
+├── README.md         # Documentação do projeto
+└── .git/             # Histórico Git
 ```
 
 ## 🎯 Recursos Implementados
 
 ### ✅ Física e Efeitos Visuais
-- [x] **Lente Gravitacional GLSL Real** - Shader baseado na Métrica de Schwarzschild
-- [x] **Redshift Gravitacional** - Implementação da equação z = 1/√(1 - rs/r) - 1
-- [x] **Doppler Shift** - Para matéria em órbita no disco de acreção
-- [x] **Einstein Ring** - Anel de fótons na esfera de fótons (2.6 * rs)
-- [x] **Radiação Hawking animada** - Partículas quânticas emitidas do horizonte
-- [x] **Jatos Relativísticos** - Partículas ejetadas pelos polos
-- [x] **Ergosfera** - Região de arrasto do espaço-tempo
-- [x] **Frame Dragging** - Visualização de espirais rotacionais
-- [x] **Dilatação Temporal** - Efeito visual de distorção temporal
+- [x] **Lente Gravitacional GLSL Avançada** com aberração cromática
+- [x] **Redshift Gravitacional** baseado em equações relativísticas
+- [x] **Einstein Ring** com pulsação dinâmica
+- [x] **Disco de Acreção M87-style** com hotspots animados
+- [x] **Radiação Hawking** com partículas quânticas
+- [x] **Jatos Relativísticos** nos polos
+- [x] **Ergosfera** pulsante
+- [x] **Frame Dragging** com espirais animadas
+- [x] **Spaghettification** de partículas
 
-### 🌌 Sistema de Presets
-- [x] **Sagittarius A*** - Centro da Via Láctea (4.1M massas solares)
-- [x] **M87*** - Primeiro BH fotografado (6.5B massas solares)
-- [x] **Cygnus X-1** - BH estelar binário (21 massas solares)
-- [x] **Modo Personalizado** - Parâmetros configuráveis
+### 🌌 Controles e Presets
+- [x] **3 Presets de Buracos Negros** (Sagittarius A*, M87*, Cygnus X-1)
+- [x] **Modo Personalizado** configurável
+- [x] **Controles Dinâmicos** em tempo real
+- [x] **Toggle de Efeitos** individuais
 
-### 🚀 Performance e Tecnologia
-- [x] **WebGL/Three.js** - Renderização acelerada por GPU
-- [x] **GLSL Shaders** - Computação paralela massiva
-- [x] **Sistema Híbrido** - WebGL 3D + Canvas 2D para partículas
-- [x] **60 FPS Target** - Loop otimizado com requestAnimationFrame
+### 🚀 Otimizações
+- [x] **60 FPS Target** otimizado
+- [x] **Renderização Híbrida** (WebGL + Canvas 2D)
+- [x] **Auto-inicialização** de WebGL
+- [x] **Reciclagem de Partículas** eficiente
 
-## 📝 Estrutura de Arquivos
+## 📋 Requisitos
 
-```
-wallpaper-black-hole/
-├── index.html          # Estrutura HTML
-├── style.css           # Estilos e animações
-├── script-simple.js    # Lógica principal com Canvas 2D
-├── webgl-lens.js       # Shader GLSL para lente gravitacional
-├── shaders.js          # Shaders alternativos (backup)
-├── script-webgl.js     # Versão Three.js (experimental)
-├── script.js           # Versão legada 2D Canvas (backup)
-└── README.md           # Este arquivo
-```
+- **Navegador moderno** com suporte a:
+  - HTML5 Canvas
+  - WebGL 1.0+
+  - JavaScript ES6+
+  - CSS3
 
-## 🎓 Conceitos de Física Implementados
+**Recomendados:**
+- Chrome/Edge 90+
+- Firefox 88+
+- Safari 14+
 
-### Métrica de Schwarzschild
-A métrica de Schwarzschild descreve o espaço-tempo ao redor de um buraco negro:
-```
-ds² = -(1 - rs/r)c²dt² + (1 - rs/r)⁻¹dr² + r²dΩ²
-```
-Onde rs é o raio de Schwarzschild: rs = 2GM/c²
+## 💡 Dicas de Uso
 
-### Deflexão da Luz
-A deflexão gravitacional da luz é calculada como:
-```
-δθ = 4GM/c²b = 2rs/b
-```
-Onde b é o parâmetro de impacto (distância perpendicular ao buraco negro)
-
-### Velocidade Orbital Kepleriana
-Partículas no disco de acreção seguem velocidades orbitais:
-```
-v = √(GM/r)
-```
-Resultando em rotação diferencial (mais rápido perto do buraco negro)
+1. **Melhor Performance**: Reduzir quantidade de partículas em dispositivos antigos
+2. **Melhor Visual**: Aumentar `lensStrength` para distorção mais evidente
+3. **Efeitos Dramáticos**: Ativar todos os efeitos e aumentar `accretionSpeed`
+4. **Preset M87**: Massa 280, Partículas 1500 para efeito mais realista
+5. **Lente GLSL**: Ativar para ver aberração cromática e redshift em tempo real
 
 ## 📜 Licença
 
@@ -199,3 +148,5 @@ Livre para uso pessoal e educacional.
 ---
 
 **Aproveite sua jornada pelo horizonte de eventos!** 🚀✨
+
+*Última atualização: Janeiro 2026*
