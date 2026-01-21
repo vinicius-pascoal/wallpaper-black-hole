@@ -139,13 +139,28 @@ class Particle {
       }
     }
 
-    if (config.infiniteZoom) {
-      if (this.x < -100 || this.x > width + 100 ||
-        this.y < -100 || this.y > height + 100) {
-        const angle = Math.atan2(this.y - centerY, this.x - centerX);
-        this.x = centerX - Math.cos(angle) * (Math.max(width, height) * 0.5);
-        this.y = centerY - Math.sin(angle) * (Math.max(width, height) * 0.5);
-      }
+    // Sistema aprimorado para manter partículas em órbita infinita
+    const maxDistance = Math.max(width, height) * 0.6;
+
+    // Se a partícula estiver muito longe, reposicionar em órbita estável
+    if (dist > maxDistance || this.x < -100 || this.x > width + 100 ||
+      this.y < -100 || this.y > height + 100) {
+
+      // Calcular uma distância orbital estável
+      const orbitalDistance = Math.random() * (maxDistance * 0.6) + 200;
+      const angle = Math.atan2(this.y - centerY, this.x - centerX);
+
+      // Reposicionar na mesma direção mas em órbita estável
+      this.x = centerX + Math.cos(angle) * orbitalDistance;
+      this.y = centerY + Math.sin(angle) * orbitalDistance;
+
+      // Calcular velocidade orbital estável (perpendicular ao raio)
+      const orbitalSpeed = Math.sqrt((config.gravityStrength * config.blackHoleMass) / orbitalDistance) * 0.8;
+      this.vx = -Math.sin(angle) * orbitalSpeed;
+      this.vy = Math.cos(angle) * orbitalSpeed;
+
+      // Resetar trilha
+      this.trail = [];
     }
 
     if (dist < 400) {
@@ -2373,15 +2388,15 @@ let easterEggActive = false;
 function getAvailableEasterEggs() {
   return [
     { name: '42', handler: handleEasterEgg42, description: 'Toalha sendo sugada' },
-    { name: 'RETRO', handler: handleEasterEggRetro, description: 'Modo 8-bit retrô' },
-    { name: 'NYAN', handler: handleEasterEggNyan, description: 'Nyan Cat orbitando' },
-    { name: 'TARDIS', handler: handleEasterEggTardis, description: 'TARDIS piscando' },
-    { name: 'MATRIX', handler: handleEasterEggMatrix, description: 'Código Matrix caindo' },
-    { name: 'PORTAL', handler: handleEasterEggPortal, description: 'Portais azul e laranja' },
-    { name: 'GLITCH', handler: handleEasterEggGlitch, description: 'Corrupção digital' },
-    { name: 'TESLA', handler: handleEasterEggTesla, description: 'Bobina de Tesla' },
-    { name: 'DOOM', handler: handleEasterEggDoom, description: 'Pentágono demoníaco' },
-    { name: 'PACMAN', handler: handleEasterEggPacman, description: 'Pac-Man e fantasmas' }
+    { name: 'RETRO', handler: toggleRetroMode, description: 'Modo 8-bit retrô' },
+    { name: 'NYAN', handler: handleNyanCat, description: 'Nyan Cat orbitando' },
+    { name: 'TARDIS', handler: handleTardis, description: 'TARDIS piscando' },
+    { name: 'MATRIX', handler: handleMatrix, description: 'Código Matrix caindo' },
+    { name: 'PORTAL', handler: handlePortal, description: 'Portais azul e laranja' },
+    { name: 'GLITCH', handler: handleGlitch, description: 'Corrupção digital' },
+    { name: 'TESLA', handler: handleTesla, description: 'Bobina de Tesla' },
+    { name: 'DOOM', handler: handleDoom, description: 'Pentágono demoníaco' },
+    { name: 'PACMAN', handler: handlePacman, description: 'Pac-Man e fantasmas' }
   ];
 }
 
