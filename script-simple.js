@@ -60,20 +60,18 @@ function resizeCanvas() {
 let config = {
   currentPreset: 'custom',
   blackHoleMass: 150,
-  particleCount: 50, // Reduzido para focar no disco
+  particleCount: 50,
   gravityStrength: 500,
   lensStrength: 50,
   accretionSpeed: 5,
-  distortionEnabled: true,
   infiniteZoom: true,
   glslLens: false,
   eventHorizon: 80,
   schwarzschildRadius: 60,
-  relativisticJets: false, // Desabilitado para estética M87/Interstellar
+  relativisticJets: false,
   hawkingRadiation: false,
   ergosphere: false,
-  frameDragging: false,
-  timeDilation: false
+  frameDragging: false
 };
 
 // Sistema de Partículas
@@ -730,10 +728,6 @@ function setupControls() {
     applyPreset(e.target.value);
   });
 
-  document.getElementById('distortionToggle').addEventListener('change', (e) => {
-    config.distortionEnabled = e.target.checked;
-  });
-
   document.getElementById('infiniteZoom').addEventListener('change', (e) => {
     config.infiniteZoom = e.target.checked;
   });
@@ -774,10 +768,6 @@ function setupControls() {
 
   document.getElementById('frameDragging').addEventListener('change', (e) => {
     config.frameDragging = e.target.checked;
-  });
-
-  document.getElementById('timeDilation').addEventListener('change', (e) => {
-    config.timeDilation = e.target.checked;
   });
 
   document.getElementById('resetBtn').addEventListener('click', () => {
