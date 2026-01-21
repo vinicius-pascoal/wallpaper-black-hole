@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌑 Buraco Negro Realista</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <canvas id="blackHoleCanvas"></canvas>
+    
+    <!-- Controles -->
+    <div class="controls">
+        <div class="control-panel">
+            <h2>🔥 Controles do Buraco Negro</h2>
+            
+            <div class="control-group">
+                <label for="massSlider">
+                    <span class="icon">😈</span> Massa do Buraco Negro
+                </label>
+                <input type="range" id="massSlider" min="50" max="300" value="150" step="10">
+                <span id="massValue">150</span>
+            </div>
+            
+            <div class="control-group">
+                <label for="particleCount">
+                    <span class="icon">✨</span> Quantidade de Partículas
+                </label>
+                <input type="range" id="particleCount" min="500" max="5000" value="2000" step="100">
+                <span id="particleValue">2000</span>
+            </div>
+            
+            <div class="control-group">
+                <label for="gravityStrength">
+                    <span class="icon">🌀</span> Força Gravitacional
+                </label>
+                <input type="range" id="gravityStrength" min="100" max="1000" value="500" step="50">
+                <span id="gravityValue">500</span>
+            </div>
+            
+            <div class="control-group">
+                <label for="lensStrength">
+                    <span class="icon">🔮</span> Lente Gravitacional
+                </label>
+                <input type="range" id="lensStrength" min="0" max="100" value="50" step="5">
+                <span id="lensValue">50</span>
+            </div>
+            
+            <div class="control-group">
+                <label for="accretionSpeed">
+                    <span class="icon">💫</span> Velocidade do Disco
+                </label>
+                <input type="range" id="accretionSpeed" min="1" max="20" value="5" step="1">
+                <span id="accretionValue">5</span>
+            </div>
+            
+            <div class="control-group checkbox-group">
+                <label>
+                    <input type="checkbox" id="distortionToggle" checked>
+                    <span>🌊 Distorção do Background</span>
+                </label>
+            </div>
+            
+            <div class="control-group checkbox-group">
+                <label>
+                    <input type="checkbox" id="infiniteZoom" checked>
+                    <span>♾️ Zoom Infinito</span>
+                </label>
+            </div>
+            
+            <button id="resetBtn" class="reset-btn">🔄 Resetar</button>
+        </div>
+        
+        <button id="toggleControls" class="toggle-btn">⚙️</button>
+    </div>
+    
+    <!-- Info -->
+    <div class="info">
+        <h3>🌑 Buraco Negro Realista</h3>
+        <p>FPS: <span id="fps">60</span></p>
+        <p>Partículas: <span id="particleCounter">0</span></p>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
