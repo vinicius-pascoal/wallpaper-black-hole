@@ -175,7 +175,7 @@ function initParticles() {
 class AccretionDisk {
   constructor() {
     this.rings = [];
-    this.numRings = 15;
+    this.numRings = 8;
     this.minRadius = config.schwarzschildRadius + 20;
     this.maxRadius = config.eventHorizon + 150;
 
@@ -457,79 +457,126 @@ function applyTimeDilation() {
 
 // Buraco Negro (Event Horizon)
 function drawBlackHole() {
-  // Sombra externa (absorção de luz)
+  // Sombra profunda externa - baseada na observação do M87
+  const shadowRadius = config.eventHorizon * 2.6; // Baseado na razão real de sombra/horizonte
   const outerShadow = ctx.createRadialGradient(
-    centerX, centerY, config.eventHorizon * 0.8,
-    centerX, centerY, config.eventHorizon * 1.5
+    centerX, centerY, config.eventHorizon * 0.5,
+    centerX, centerY, shadowRadius
   );
-  outerShadow.addColorStop(0, 'rgba(0, 0, 0, 0.9)');
-  outerShadow.addColorStop(0.5, 'rgba(0, 0, 5, 0.6)');
+  outerShadow.addColorStop(0, 'rgba(0, 0, 0, 1)');
+  outerShadow.addColorStop(0.4, 'rgba(0, 0, 0, 0.98)');
+  outerShadow.addColorStop(0.7, 'rgba(2, 0, 5, 0.8)');
+  outerShadow.addColorStop(0.85, 'rgba(5, 2, 10, 0.4)');
   outerShadow.addColorStop(1, 'rgba(0, 0, 0, 0)');
 
   ctx.beginPath();
-  ctx.arc(centerX, centerY, config.eventHorizon * 1.5, 0, Math.PI * 2);
+  ctx.arc(centerX, centerY, shadowRadius, 0, Math.PI * 2);
   ctx.fillStyle = outerShadow;
   ctx.fill();
 
-  // Photon Sphere (anel de luz triplo - mais realista)
+  // Photon Sphere - anel de luz baseado em simulações reais
   const photonRadius = config.schwarzschildRadius * 1.5;
+  const time = Date.now() * 0.001;
 
-  // Anel externo (mais fraco)
+  // Einstein Ring (anel secundário de lensing)
+  const einsteinRingRadius = photonRadius * 1.4;
+  for (let i = 0; i < 3; i++) {
+    const offset = i * 3;
+    const opacity = (3 - i) * 0.08;
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, einsteinRingRadius + offset, 0, Math.PI * 2);
+    ctx.strokeStyle = `rgba(255, 220, 180, ${opacity})`;
+    ctx.lineWidth = 2;
+    ctx.shadowBlur = 15;
+    ctx.shadowColor = `rgba(255, 220, 180, ${opacity * 0.6})`;
+    ctx.stroke();
+  }
+
+  // Photon Sphere - camada externa difusa
   ctx.beginPath();
-  ctx.arc(centerX, centerY, photonRadius + 8, 0, Math.PI * 2);
-  ctx.strokeStyle = 'rgba(255, 180, 80, 0.15)';
-  ctx.lineWidth = 6;
-  ctx.shadowBlur = 25;
-  ctx.shadowColor = 'rgba(255, 180, 80, 0.4)';
+  ctx.arc(centerX, centerY, photonRadius + 12, 0, Math.PI * 2);
+  ctx.strokeStyle = 'rgba(255, 200, 140, 0.12)';
+  ctx.lineWidth = 8;
+  ctx.shadowBlur = 30;
+  ctx.shadowColor = 'rgba(255, 200, 140, 0.3)';
   ctx.stroke();
 
-  // Anel do meio
+  // Photon Sphere - anel principal (mais brilhante)
   ctx.beginPath();
   ctx.arc(centerX, centerY, photonRadius, 0, Math.PI * 2);
-  ctx.strokeStyle = 'rgba(255, 200, 100, 0.4)';
-  ctx.lineWidth = 3;
-  ctx.shadowBlur = 35;
-  ctx.shadowColor = 'rgba(255, 200, 100, 0.8)';
+  const mainPhotonGradient = ctx.createRadialGradient(
+    centerX, centerY, photonRadius - 2,
+    centerX, centerY, photonRadius + 2
+  );
+  mainPhotonGradient.addColorStop(0, 'rgba(255, 240, 200, 0)');
+  mainPhotonGradient.addColorStop(0.5, 'rgba(255, 230, 180, 0.7)');
+  mainPhotonGradient.addColorStop(1, 'rgba(255, 200, 140, 0)');
+  ctx.strokeStyle = mainPhotonGradient;
+  ctx.lineWidth = 4;
+  ctx.shadowBlur = 45;
+  ctx.shadowColor = 'rgba(255, 230, 180, 1)';
   ctx.stroke();
 
-  // Anel interno (mais intenso)
+  // Photon Sphere - anel interno intenso
   ctx.beginPath();
-  ctx.arc(centerX, centerY, photonRadius - 5, 0, Math.PI * 2);
-  ctx.strokeStyle = 'rgba(255, 220, 150, 0.6)';
+  ctx.arc(centerX, centerY, photonRadius - 6, 0, Math.PI * 2);
+  ctx.strokeStyle = 'rgba(255, 245, 220, 0.5)';
   ctx.lineWidth = 2;
-  ctx.shadowBlur = 40;
-  ctx.shadowColor = 'rgba(255, 220, 150, 1)';
+  ctx.shadowBlur = 50;
+  ctx.shadowColor = 'rgba(255, 245, 220, 0.9)';
+  ctx.stroke();
+
+  // Pulsos de luz realistas na photon sphere
+  const pulseIntensity = Math.sin(time * 2) * 0.15 + 0.85;
+  ctx.shadowBlur = 35 * pulseIntensity;
   ctx.stroke();
   ctx.shadowBlur = 0;
 
-  // Event Horizon (preto absoluto com borda suave)
+  // Event Horizon - preto absoluto com degradê mais realista
   const horizonGradient = ctx.createRadialGradient(
     centerX, centerY, 0,
     centerX, centerY, config.eventHorizon
   );
 
   horizonGradient.addColorStop(0, '#000000');
-  horizonGradient.addColorStop(0.8, '#000000');
-  horizonGradient.addColorStop(0.95, 'rgba(5, 0, 10, 0.8)');
-  horizonGradient.addColorStop(1, 'rgba(0, 0, 0, 0.3)');
+  horizonGradient.addColorStop(0.7, '#000000');
+  horizonGradient.addColorStop(0.88, 'rgba(1, 0, 2, 0.95)');
+  horizonGradient.addColorStop(0.96, 'rgba(3, 1, 5, 0.6)');
+  horizonGradient.addColorStop(1, 'rgba(0, 0, 0, 0.1)');
 
   ctx.beginPath();
   ctx.arc(centerX, centerY, config.eventHorizon, 0, Math.PI * 2);
   ctx.fillStyle = horizonGradient;
   ctx.fill();
 
-  // Núcleo ultra-escuro (singularidade)
+  // Singularidade - centro absoluto
+  const singularityRadius = config.schwarzschildRadius * 0.2;
   const singularityGradient = ctx.createRadialGradient(
     centerX, centerY, 0,
-    centerX, centerY, config.schwarzschildRadius * 0.3
+    centerX, centerY, singularityRadius
   );
   singularityGradient.addColorStop(0, '#000000');
   singularityGradient.addColorStop(1, '#000000');
 
   ctx.beginPath();
-  ctx.arc(centerX, centerY, config.schwarzschildRadius * 0.3, 0, Math.PI * 2);
+  ctx.arc(centerX, centerY, singularityRadius, 0, Math.PI * 2);
   ctx.fillStyle = singularityGradient;
   ctx.fill();
+
+  // Efeito de distorção óptica sutil no horizonte
+  const distortionGradient = ctx.createRadialGradient(
+    centerX, centerY, config.eventHorizon * 0.95,
+    centerX, centerY, config.eventHorizon * 1.05
+  );
+  distortionGradient.addColorStop(0, 'rgba(10, 5, 15, 0)');
+  distortionGradient.addColorStop(0.5, 'rgba(15, 8, 20, 0.15)');
+  distortionGradient.addColorStop(1, 'rgba(10, 5, 15, 0)');
+
+  ctx.beginPath();
+  ctx.arc(centerX, centerY, config.eventHorizon, 0, Math.PI * 2);
+  ctx.strokeStyle = distortionGradient;
+  ctx.lineWidth = 3;
+  ctx.stroke();
 }
 
 // Lente Gravitacional
@@ -755,12 +802,6 @@ function animate() {
   // Aplicar lente gravitacional (cuidado: pode ser pesado)
   // Descomente se quiser ativar a lente gravitacional real
   // applyGravitationalLensing();
-
-  // Atualizar contador de partículas
-  document.getElementById('particleCounter').textContent = particles.length;
-
-  // Atualizar FPS
-  updateFPS();
 
   requestAnimationFrame(animate);
 }
