@@ -141,7 +141,71 @@ wallpaper-black-hole/
 4. **Preset M87**: Massa 280, Partículas 1500 para efeito mais realista
 5. **Lente GLSL**: Ativar para ver aberração cromática e redshift em tempo real
 
-## 📜 Licença
+## � Melhorias Futuras
+
+### 🎯 Funcionalidades Planejadas
+- [ ] **Sistema de Som Espacial** - Áudio reativo à proximidade do buraco negro
+- [ ] **Modo VR/360°** - Experiência imersiva em realidade virtual
+- [ ] **Simulação de Acreção Realística** - Física de fluidos no disco
+- [ ] **Sistema Binário** - Dois buracos negros orbitando
+- [ ] **Ondas Gravitacionais** - Visualização de ripples no espaço-tempo
+- [ ] **Estrelas Capturadas** - Objetos estelares sendo despedaçados (tidal disruption)
+- [ ] **Trajetórias de Geodésicas** - Visualização de caminhos de luz
+- [ ] **Modo Foto** - Captura de screenshots em alta resolução
+- [ ] **Exportar Animação** - Gravar vídeo da simulação
+
+### 🎨 Melhorias Visuais
+- [ ] **Neblosa de Fundo** - Galáxias e nebulosas ao fundo
+- [ ] **Partículas 3D** - Sistema de partículas com Three.js
+- [ ] **Bloom Effect** - Post-processing para brilho intenso
+- [ ] **Motion Blur** - Rastro de movimento nas partículas
+- [ ] **Color Grading** - Paletas de cores personalizáveis
+- [ ] **Depth of Field** - Foco seletivo cinematográfico
+- [ ] **Lens Flare** - Reflexos de lente no photon sphere
+- [ ] **Volumetric Light** - Raios de luz volumétricos
+
+### 🧪 Física Avançada
+- [ ] **Órbitas Estáveis** - Partículas em órbitas circulares estáveis
+- [ ] **Precessão de Periélio** - Efeito relativístico nas órbitas
+- [ ] **Efeito Shapiro** - Atraso temporal da luz
+- [ ] **Blueshift/Redshift Doppler** - Mudança de frequência por velocidade
+- [ ] **Kerr Black Hole** - Buraco negro rotativo (solução de Kerr)
+- [ ] **Disco de Acreção Quente vs Frio** - Estados diferentes do disco
+- [ ] **Simulação de Maré Gravitacional** - Spaghettification detalhada
+- [ ] **Temperatura do Disco** - Gradiente de temperatura realístico
+
+### 🎮 Interatividade
+- [ ] **Controle com Mouse** - Arrastar para orbitar câmera
+- [ ] **Controle com Touch** - Gestos em dispositivos móveis
+- [ ] **Lançar Partículas** - Clique para adicionar partículas
+- [ ] **Modo Sandbox** - Criar múltiplos buracos negros
+- [ ] **Timeline de Simulação** - Controlar tempo (acelerar/desacelerar)
+- [ ] **Gravação de Replay** - Salvar e reproduzir simulações
+- [ ] **Share Links** - Compartilhar configurações via URL
+
+### 🎁 Easter Eggs e Surpresas
+- [ ] **Konami Code** - Ativa modo "Universo Paralelo" com cores invertidas
+- [ ] **Double Click no Centro** - Cria um mini buraco branco (anti-buraco negro)
+- [ ] **Pressionar '42'** - Referência ao Guia do Mochileiro das Galáxias
+- [ ] **Modo Retro** - Visual pixelado 8-bit ao pressionar 'R'
+- [ ] **Portal Secreto** - Clique 7x no logo para abrir portal interdimensional
+- [ ] **Gato de Schrödinger** - Partícula especial que existe/não existe simultaneamente
+- [ ] **Mensagem de Hawking** - Quote aleatório de Stephen Hawking ao pausar
+- [ ] **Time Lord Mode** - Ao pressionar 'T', o tempo flui ao contrário
+- [ ] **Matrix Mode** - Código verde estilo Matrix com 'M'
+- [ ] **Singularity Voice** - Sussurros cósmicos quando muito perto do horizonte
+- [ ] **Hidden Preset: TON 618** - Buraco negro supermassivo colossal (66 bilhões de massas solares)
+- [ ] **Event Horizon Song** - Melodia gerada pela frequência das partículas
+- [ ] **Cosmic Joke** - Pressionar Ctrl+Alt+Delete mostra "Cannot delete universe.exe"
+
+### 🌐 Integração e Compartilhamento
+- [ ] **API REST** - Endpoints para configurar via código
+- [ ] **Discord Rich Presence** - Mostrar status no Discord
+- [ ] **Wallpaper Engine** - Integração com Steam Wallpaper Engine
+- [ ] **OBS Browser Source** - Usar como overlay em streams
+- [ ] **Exportar NFT** - Mint snapshot como NFT (blockchain)
+
+## �📜 Licença
 
 Livre para uso pessoal e educacional.
 
