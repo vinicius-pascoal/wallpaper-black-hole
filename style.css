@@ -163,6 +163,7 @@ body {
   background: linear-gradient(90deg, rgba(138, 43, 226, 0.3), rgba(255, 0, 255, 0.6));
   border-radius: 5px;
   outline: none;
+  appearance: none;
   -webkit-appearance: none;
 }
 
@@ -310,6 +311,49 @@ body {
 .info span {
   color: #ff00ff;
   font-weight: bold;
+}
+
+/* Input Escondido para Easter Eggs */
+.secret-input-container {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  padding: 20px;
+  transition: all 0.3s ease;
+}
+
+.secret-input-container:hover .secret-input {
+  opacity: 1;
+}
+
+.secret-input {
+  padding: 10px 15px;
+  font-size: 14px;
+  border: 2px solid rgba(138, 43, 226, 0.5);
+  border-radius: 25px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #00ff00;
+  font-family: 'Courier New', monospace;
+  text-align: center;
+  outline: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px rgba(138, 43, 226, 0.3);
+  width: 250px;
+  opacity: 0.1;
+}
+
+.secret-input:focus {
+  opacity: 1 !important;
+  border-color: rgba(138, 43, 226, 1);
+  box-shadow: 0 0 20px rgba(138, 43, 226, 0.8),
+    inset 0 0 10px rgba(138, 43, 226, 0.2);
+  background: rgba(0, 0, 0, 0.95);
+}
+
+.secret-input::placeholder {
+  color: rgba(0, 255, 0, 0.5);
 }
 
 /* Animações */

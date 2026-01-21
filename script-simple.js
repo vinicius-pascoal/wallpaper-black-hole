@@ -898,27 +898,43 @@ function setupControls() {
     location.reload();
   });
 
-  // ===== EASTER EGGS =====
+  // ===== INPUT ESCONDIDO PARA EASTER EGGS =====
+  const secretInput = document.getElementById('secretInput');
 
-  // Easter Egg: Pressionar '42' - Referência ao Guia do Mochileiro das Galáxias
-  let lastKeySequence = '';
-  document.addEventListener('keydown', (e) => {
-    lastKeySequence += e.key;
+  secretInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      const command = secretInput.value.toLowerCase().trim();
 
-    // Manter apenas os últimos 2 caracteres
-    if (lastKeySequence.length > 2) {
-      lastKeySequence = lastKeySequence.slice(-2);
+      if (command === '42') {
+        handleEasterEgg42();
+        secretInput.value = '';
+        secretInput.blur();
+      } else if (command === 'retro' || command === 'retromodo') {
+        toggleRetroMode();
+        secretInput.value = '';
+        secretInput.blur();
+      } else if (command === 'nyan') {
+        handleNyanCat();
+        secretInput.value = '';
+        secretInput.blur();
+      } else if (command === 'tardis') {
+        handleTardis();
+        secretInput.value = '';
+        secretInput.blur();
+      } else if (command === 'matrix') {
+        handleMatrix();
+        secretInput.value = '';
+        secretInput.blur();
+      } else if (command === 'help' || command === 'ajuda') {
+        showSecretHelp();
+        secretInput.value = '';
+      }
     }
+  });
 
-    // Detectar '42'
-    if (lastKeySequence === '42' || e.key === '4' && document.activeElement === document.body) {
-      handleEasterEgg42();
-    }
-
-    // Detectar tecla 'R' para Modo Retro
-    if ((e.key === 'm' || e.key === 'M') && (e.ctrlKey || e.shiftKey)) {
-      toggleRetroMode();
-    }
+  // Limpar input ao perder foco
+  secretInput.addEventListener('blur', () => {
+    secretInput.value = '';
   });
 }
 
@@ -1092,6 +1108,283 @@ function toggleRetroMode() {
     const notif = document.getElementById('retroNotification');
     if (notif) notif.remove();
   }
+}
+
+// Função para exibir ajuda do input escondido
+function showSecretHelp() {
+  const helpText = `
+    🔮 COMANDOS SECRETOS 🔮
+    
+    42        - A resposta para tudo! (toalha sucada)
+    retro     - Ativa modo retro 8-bit
+    nyan      - Nyan Cat orbita o buraco negro 🐱🌈
+    tardis    - TARDIS do Doctor Who 📞
+    matrix    - Modo Matrix com código caindo 💚
+    ajuda     - Mostra esta mensagem
+  `;
+
+  const helpNotif = document.createElement('div');
+  helpNotif.style.cssText = `
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.95);
+    color: #00ff00;
+    padding: 30px 40px;
+    border: 3px solid rgba(138, 43, 226, 0.8);
+    border-radius: 10px;
+    font-family: 'Courier New', monospace;
+    z-index: 10000;
+    text-align: center;
+    max-width: 400px;
+    box-shadow: 0 0 30px rgba(138, 43, 226, 0.6);
+    animation: helpAppear 0.3s ease;
+  `;
+
+  helpNotif.innerHTML = helpText.replace(/\n/g, '<br/>');
+  document.body.appendChild(helpNotif);
+
+  // Adicionar animação
+  if (!document.getElementById('helpStyle')) {
+    const style = document.createElement('style');
+    style.id = 'helpStyle';
+    style.textContent = `
+      @keyframes helpAppear {
+        0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+        100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  setTimeout(() => helpNotif.remove(), 4000);
+}
+
+// Easter Egg: Nyan Cat orbitando o buraco negro
+function handleNyanCat() {
+  console.log('🐱🌈 NYAN CAT chegou!');
+
+  const nyanCat = document.createElement('div');
+  nyanCat.id = 'nyanCat';
+  nyanCat.style.cssText = `
+    position: fixed;
+    width: 150px;
+    height: 90px;
+    z-index: 9999;
+    pointer-events: none;
+    animation: nyanOrbit 5s linear infinite;
+  `;
+
+  const nyanImg = document.createElement('img');
+  nyanImg.src = 'imgs/nyan-cat.gif';
+  nyanImg.style.cssText = `
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  `;
+  nyanImg.onerror = () => console.error('Erro ao carregar nyan-cat.gif');
+
+  nyanCat.appendChild(nyanImg);
+  document.body.appendChild(nyanCat);
+
+  // Adicionar animação de órbita
+  if (!document.getElementById('nyanStyle')) {
+    const style = document.createElement('style');
+    style.id = 'nyanStyle';
+    style.textContent = `
+      @keyframes nyanOrbit {
+        0% {
+          left: calc(50% + 300px * cos(0deg));
+          top: calc(50% + 300px * sin(0deg));
+          transform: translate(-50%, -50%) rotate(0deg);
+        }
+        25% {
+          left: calc(50% + 300px * cos(90deg));
+          top: calc(50% + 300px * sin(90deg));
+          transform: translate(-50%, -50%) rotate(90deg);
+        }
+        50% {
+          left: calc(50% + 300px * cos(180deg));
+          top: calc(50% + 300px * sin(180deg));
+          transform: translate(-50%, -50%) rotate(180deg);
+        }
+        75% {
+          left: calc(50% + 300px * cos(270deg));
+          top: calc(50% + 300px * sin(270deg));
+          transform: translate(-50%, -50%) rotate(270deg);
+        }
+        100% {
+          left: calc(50% + 300px * cos(360deg));
+          top: calc(50% + 300px * sin(360deg));
+          transform: translate(-50%, -50%) rotate(360deg);
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  // Remover após 10 segundos
+  setTimeout(() => {
+    const nyan = document.getElementById('nyanCat');
+    if (nyan) nyan.remove();
+  }, 10000);
+}
+
+// Easter Egg: TARDIS - Buraco negro piscando
+function handleTardis() {
+  console.log('📞 TARDIS materialized!');
+
+  const canvas = document.getElementById('blackHoleCanvas');
+  const webglCanvas = document.getElementById('webglCanvas');
+
+  // Som TARDIS notification
+  const tardisNotif = document.createElement('div');
+  tardisNotif.style.cssText = `
+    position: fixed;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 50, 150, 0.95);
+    color: #fff;
+    padding: 20px 40px;
+    border: 3px solid #0088ff;
+    border-radius: 10px;
+    font-family: 'Courier New', monospace;
+    font-size: 24px;
+    z-index: 10000;
+    text-align: center;
+    box-shadow: 0 0 40px rgba(0, 136, 255, 0.8);
+    animation: tardisAppear 0.5s ease;
+  `;
+  tardisNotif.innerHTML = '📞 TARDIS DETECTED<br/><span style="font-size: 14px;">Wibbly Wobbly Timey Wimey</span>';
+  document.body.appendChild(tardisNotif);
+
+  // Animação de piscar
+  let blinkCount = 0;
+  const blinkInterval = setInterval(() => {
+    if (blinkCount >= 20) {
+      clearInterval(blinkInterval);
+      canvas.style.opacity = '1';
+      if (webglCanvas) webglCanvas.style.opacity = '1';
+      return;
+    }
+
+    const opacity = blinkCount % 2 === 0 ? '0.1' : '1';
+    canvas.style.opacity = opacity;
+    if (webglCanvas) webglCanvas.style.opacity = opacity;
+
+    blinkCount++;
+  }, 200);
+
+  // Adicionar estilo
+  if (!document.getElementById('tardisStyle')) {
+    const style = document.createElement('style');
+    style.id = 'tardisStyle';
+    style.textContent = `
+      @keyframes tardisAppear {
+        0% { transform: translateX(-50%) scale(2); opacity: 0; }
+        50% { transform: translateX(-50%) scale(0.5); opacity: 0.5; }
+        100% { transform: translateX(-50%) scale(1); opacity: 1; }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  setTimeout(() => tardisNotif.remove(), 5000);
+}
+
+// Easter Egg: Matrix - Código caindo
+function handleMatrix() {
+  console.log('💚 Welcome to the Matrix...');
+
+  const matrixCanvas = document.createElement('canvas');
+  matrixCanvas.id = 'matrixCanvas';
+  matrixCanvas.width = window.innerWidth;
+  matrixCanvas.height = window.innerHeight;
+  matrixCanvas.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9998;
+    pointer-events: none;
+  `;
+  document.body.appendChild(matrixCanvas);
+
+  const ctx = matrixCanvas.getContext('2d');
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()';
+  const fontSize = 14;
+  const columns = matrixCanvas.width / fontSize;
+  const drops = Array(Math.floor(columns)).fill(1);
+
+  // Notificação Matrix
+  const matrixNotif = document.createElement('div');
+  matrixNotif.style.cssText = `
+    position: fixed;
+    top: 30%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.95);
+    color: #00ff00;
+    padding: 20px 40px;
+    border: 3px solid #00ff00;
+    font-family: 'Courier New', monospace;
+    font-size: 20px;
+    z-index: 10001;
+    text-align: center;
+    box-shadow: 0 0 40px rgba(0, 255, 0, 0.8);
+    animation: matrixGlitch 0.1s infinite;
+  `;
+  matrixNotif.innerHTML = 'WAKE UP, NEO...<br/><span style="font-size: 12px;">The Matrix has you</span>';
+  document.body.appendChild(matrixNotif);
+
+  // Animação de código caindo
+  const matrixInterval = setInterval(() => {
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+    ctx.fillRect(0, 0, matrixCanvas.width, matrixCanvas.height);
+
+    ctx.fillStyle = '#0f0';
+    ctx.font = fontSize + 'px monospace';
+
+    for (let i = 0; i < drops.length; i++) {
+      const text = chars[Math.floor(Math.random() * chars.length)];
+      ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+      if (drops[i] * fontSize > matrixCanvas.height && Math.random() > 0.975) {
+        drops[i] = 0;
+      }
+      drops[i]++;
+    }
+  }, 50);
+
+  // Adicionar estilo de glitch
+  if (!document.getElementById('matrixStyle')) {
+    const style = document.createElement('style');
+    style.id = 'matrixStyle';
+    style.textContent = `
+      @keyframes matrixGlitch {
+        0%, 100% { transform: translateX(-50%) translateY(0); }
+        25% { transform: translateX(-48%) translateY(-2px); }
+        75% { transform: translateX(-52%) translateY(2px); }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  // Aplicar filtro verde temporariamente
+  const originalFilter = canvas.style.filter;
+  canvas.style.filter = 'hue-rotate(90deg) saturate(2)';
+
+  // Remover após 8 segundos
+  setTimeout(() => {
+    clearInterval(matrixInterval);
+    const matrixC = document.getElementById('matrixCanvas');
+    if (matrixC) matrixC.remove();
+    if (matrixNotif) matrixNotif.remove();
+    canvas.style.filter = originalFilter;
+  }, 8000);
 }
 
 // Controle de visibilidade do painel

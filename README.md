@@ -143,14 +143,31 @@ wallpaper-black-hole/
 
 ## 🎮 Easter Eggs Secretos
 
-### 🎯 Pressionar '42'
-Digite a sequência **'42'** no teclado para ativar a referência ao **Guia do Mochileiro das Galáxias**. Uma mensagem especial aparecerá com efeito visual no buraco negro! ✨
+### 🔮 Como Ativar
+Passe o mouse no **topo central da tela** para revelar o **campo de entrada secreto**. Ele aparecerá gradualmente com uma leve transparência. Digite um comando e pressione **Enter** para ativar o efeito!
 
-### 🎨 Modo Retro
-Pressione **Ctrl+R** (ou Shift+R) para ativar o **Modo Retro 8-bit**. O visual pixelado transforma a experiência em um retro clássico dos anos 80! 🎮
+### 📝 Comandos Disponíveis
 
-### 🐱 Gato de Schrödinger
-O sistema gera espontaneamente **partículas de Schrödinger** que **existem e não existem simultaneamente**. Observe-as alternando entre visível (normal) e fantasmagórico (semi-transparente)! 👻
+#### 🎯 42
+Digite **'42'** para ativar a referência ao **Guia do Mochileiro das Galáxias**. A toalha será sugada para dentro do buraco negro com rotação de 1080° e efeitos gravitacionais temporários! ✨
+
+#### 🎨 retro
+Digite **'retro'** para ativar o **Modo Retro 8-bit**. O visual pixelado transforma a experiência em um clássico dos anos 80 com notificação estilo terminal verde! 🎮
+
+#### 🐱🌈 nyan
+Digite **'nyan'** para fazer o lendário **Nyan Cat** orbitar o buraco negro por 10 segundos com seu GIF animado original! 
+
+#### 📞 tardis
+Digite **'tardis'** para ativar o efeito **Doctor Who**. O buraco negro piscará rapidamente simulando a materialização da TARDIS! "Wibbly Wobbly Timey Wimey" 🕰️
+
+#### 💚 matrix
+Digite **'matrix'** para entrar no **Modo Matrix**. Código verde cairá pela tela por 8 segundos enquanto o buraco negro ganha um filtro cibernético! "Wake up, Neo..."
+
+#### ❓ ajuda
+Digite **'ajuda'** ou **'help'** para ver a lista completa de comandos disponíveis em uma notificação estilo terminal.
+
+#### 👻 Gato de Schrödinger (Automático)
+O sistema gera espontaneamente **partículas de Schrödinger** a cada 2 segundos que **existem e não existem simultaneamente**. Observe-as alternando entre visível e fantasmagórico!
 
 ## 📋 Melhorias Futuras
 
@@ -160,7 +177,7 @@ O sistema gera espontaneamente **partículas de Schrödinger** que **existem e n
 - [ ] **Trajetórias de Geodésicas** - Visualização de caminhos de luz
 
 ### 🎨 Melhorias Visuais
-- [x] **Neblosa de Fundo** - Galáxias e nebulosas ao fundo
+- [x] **Neblosa de Fundo** - Nebulosas procedurais ao fundo
 - [ ] **Partículas 3D** - Sistema de partículas com Three.js
 - [ ] **Bloom Effect** - Post-processing para brilho intenso
 - [ ] **Motion Blur** - Rastro de movimento nas partículas
@@ -175,9 +192,18 @@ O sistema gera espontaneamente **partículas de Schrödinger** que **existem e n
 - [ ] **Lançar Partículas** - Clique para adicionar partículas
 
 ### 🎁 Easter Eggs e Surpresas
-- [x] **Pressionar '42'** - Referência ao Guia do Mochileiro das Galáxias
-- [x] **Modo Retro** - Visual pixelado 8-bit ao pressionar selecionar no painel
-- [x] **Gato de Schrödinger** - Partícula especial que existe/não existe simultaneamente
+
+**🔮 Como Ativar Easter Eggs:**
+Passe o mouse no **topo central da tela** para revelar o campo de entrada secreto. Digite um comando e pressione **Enter**!
+
+**Comandos Disponíveis:**
+- [x] **42** - Toalha sendo sugada para o buraco negro (Guia do Mochileiro das Galáxias)
+- [x] **retro** - Modo Retro 8-bit com visual pixelado
+- [x] **nyan** - Nyan Cat orbita o buraco negro por 10 segundos 🐱🌈
+- [x] **tardis** - Buraco negro pisca (Doctor Who) 📞
+- [x] **matrix** - Código verde caindo estilo Matrix por 8 segundos 💚
+- [x] **ajuda** - Mostra lista de comandos disponíveis
+- [x] **Gato de Schrödinger** - Partículas quânticas aparecem automaticamente a cada 2 segundos
 
 
 
