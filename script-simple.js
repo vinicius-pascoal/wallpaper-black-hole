@@ -929,6 +929,10 @@ function setupControls() {
         handlePortal();
         secretInput.value = '';
         secretInput.blur();
+      } else if (command === 'glitch') {
+        handleGlitch();
+        secretInput.value = '';
+        secretInput.blur();
       } else if (command === 'help' || command === 'ajuda') {
         showSecretHelp();
         secretInput.value = '';
@@ -1125,6 +1129,7 @@ function showSecretHelp() {
     tardis    - TARDIS do Doctor Who 📞
     matrix    - Modo Matrix com código caindo 💚
     portal    - Portais laranja e azul aparecem 🔵🟠
+    glitch    - Corrupção digital extrema 📺
     ajuda     - Mostra esta mensagem
   `;
 
@@ -1527,6 +1532,198 @@ function handlePortal() {
     if (orange) orange.remove();
     if (cakeMsg) cakeMsg.remove();
   }, 12000);
+}
+
+// Easter Egg: Glitch - Corrupção digital extrema
+function handleGlitch() {
+  console.log('📺 SYSTEM.ERROR_CORRUPTED');
+
+  const canvas = document.getElementById('blackHoleCanvas');
+  const webglCanvas = document.getElementById('webglCanvas');
+
+  // Notificação de erro
+  const glitchNotif = document.createElement('div');
+  glitchNotif.style.cssText = `
+    position: fixed;
+    top: 30%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 0, 0, 0.9);
+    color: #fff;
+    padding: 20px 40px;
+    border: 3px solid #ff0000;
+    font-family: 'Courier New', monospace;
+    font-size: 20px;
+    font-weight: bold;
+    z-index: 10001;
+    text-align: center;
+    box-shadow: 0 0 40px rgba(255, 0, 0, 0.8);
+    animation: glitchShake 0.1s infinite;
+  `;
+  glitchNotif.innerHTML = '⚠️ SYSTEM ERROR<br/><span style="font-size: 14px;">REALITY.CORRUPTED</span>';
+  document.body.appendChild(glitchNotif);
+
+  // Adicionar animações CSS
+  if (!document.getElementById('glitchStyle')) {
+    const style = document.createElement('style');
+    style.id = 'glitchStyle';
+    style.textContent = `
+      @keyframes glitchShake {
+        0% { transform: translateX(-50%) translateY(0) skewX(0deg); }
+        20% { transform: translateX(-48%) translateY(-2px) skewX(2deg); }
+        40% { transform: translateX(-52%) translateY(2px) skewX(-2deg); }
+        60% { transform: translateX(-50%) translateY(-1px) skewX(1deg); }
+        80% { transform: translateX(-51%) translateY(1px) skewX(-1deg); }
+        100% { transform: translateX(-50%) translateY(0) skewX(0deg); }
+      }
+      @keyframes glitchBg {
+        0% { filter: hue-rotate(0deg) saturate(1); }
+        20% { filter: hue-rotate(90deg) saturate(3); }
+        40% { filter: hue-rotate(180deg) saturate(1); }
+        60% { filter: hue-rotate(270deg) saturate(3); }
+        80% { filter: hue-rotate(360deg) saturate(1); }
+        100% { filter: hue-rotate(0deg) saturate(1); }
+      }
+      .glitch-rgb-split {
+        animation: glitchRGB 0.2s infinite;
+      }
+      @keyframes glitchRGB {
+        0% {
+          text-shadow: 2px 0 0 red, -2px 0 0 cyan;
+          transform: translate(0);
+        }
+        20% {
+          text-shadow: -2px 0 0 red, 2px 0 0 cyan;
+          transform: translate(-2px, 2px);
+        }
+        40% {
+          text-shadow: 2px 0 0 cyan, -2px 0 0 red;
+          transform: translate(2px, -2px);
+        }
+        60% {
+          text-shadow: -2px 0 0 cyan, 2px 0 0 red;
+          transform: translate(-2px, -2px);
+        }
+        80% {
+          text-shadow: 2px 0 0 red, -2px 0 0 cyan;
+          transform: translate(2px, 2px);
+        }
+        100% {
+          text-shadow: -2px 0 0 cyan, 2px 0 0 red;
+          transform: translate(0);
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  // Aplicar efeito RGB split no canvas
+  let glitchInterval;
+  const originalFilter = canvas.style.filter;
+  const originalTransform = canvas.style.transform;
+
+  glitchInterval = setInterval(() => {
+    const randomX = (Math.random() - 0.5) * 10;
+    const randomY = (Math.random() - 0.5) * 10;
+    const randomRotate = (Math.random() - 0.5) * 2;
+    const randomHue = Math.random() * 360;
+    const randomSaturate = 1 + Math.random() * 2;
+    const randomInvert = Math.random() > 0.7 ? 1 : 0;
+
+    canvas.style.filter = `
+      hue-rotate(${randomHue}deg) 
+      saturate(${randomSaturate}) 
+      invert(${randomInvert})
+      contrast(${1 + Math.random()})
+    `;
+    canvas.style.transform = `translate(${randomX}px, ${randomY}px) rotate(${randomRotate}deg)`;
+
+    if (webglCanvas) {
+      webglCanvas.style.filter = canvas.style.filter;
+      webglCanvas.style.transform = canvas.style.transform;
+    }
+  }, 50);
+
+  // Efeito de scan lines
+  const scanlines = document.createElement('div');
+  scanlines.id = 'glitchScanlines';
+  scanlines.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.15),
+      rgba(0, 0, 0, 0.15) 1px,
+      transparent 1px,
+      transparent 2px
+    );
+    pointer-events: none;
+    z-index: 9997;
+    animation: glitchScan 8s linear infinite;
+  `;
+  document.body.appendChild(scanlines);
+
+  // Static/noise overlay
+  const staticCanvas = document.createElement('canvas');
+  staticCanvas.id = 'glitchStatic';
+  staticCanvas.width = window.innerWidth;
+  staticCanvas.height = window.innerHeight;
+  staticCanvas.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9998;
+    pointer-events: none;
+    opacity: 0.15;
+  `;
+  document.body.appendChild(staticCanvas);
+
+  const staticCtx = staticCanvas.getContext('2d');
+  const staticInterval = setInterval(() => {
+    const imageData = staticCtx.createImageData(staticCanvas.width, staticCanvas.height);
+    for (let i = 0; i < imageData.data.length; i += 4) {
+      const gray = Math.random() * 255;
+      imageData.data[i] = gray;
+      imageData.data[i + 1] = gray;
+      imageData.data[i + 2] = gray;
+      imageData.data[i + 3] = 255;
+    }
+    staticCtx.putImageData(imageData, 0, 0);
+  }, 50);
+
+  // Adicionar animação de scanline
+  const scanStyle = document.createElement('style');
+  scanStyle.textContent = `
+    @keyframes glitchScan {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(100%); }
+    }
+  `;
+  document.head.appendChild(scanStyle);
+
+  // Remover após 6 segundos
+  setTimeout(() => {
+    clearInterval(glitchInterval);
+    clearInterval(staticInterval);
+    canvas.style.filter = originalFilter;
+    canvas.style.transform = originalTransform;
+    if (webglCanvas) {
+      webglCanvas.style.filter = '';
+      webglCanvas.style.transform = '';
+    }
+
+    if (glitchNotif) glitchNotif.remove();
+    const scan = document.getElementById('glitchScanlines');
+    if (scan) scan.remove();
+    const stat = document.getElementById('glitchStatic');
+    if (stat) stat.remove();
+    if (scanStyle) scanStyle.remove();
+  }, 6000);
 }
 
 // Controle de visibilidade do painel

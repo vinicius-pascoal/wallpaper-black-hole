@@ -210,6 +210,7 @@ Baseado em impacto visual, facilidade de implementação e diversão:
 - [x] TARDIS - Buraco negro piscando
 - [x] MATRIX - Código caindo
 - [x] PORTAL - Portais azul e laranja com teletransporte
+- [x] GLITCH - Corrupção digital com RGB split e scan lines
 
 ### 🔜 Pendentes
 - [ ] Todos os listados acima (27 ideias)
