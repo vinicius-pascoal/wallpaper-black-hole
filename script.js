@@ -95,11 +95,14 @@ class Particle {
       }
     }
 
-    // Reciclagem de partículas fora da tela
+    // Reciclagem de partículas fora da tela (não cria novas, apenas reposiciona)
     if (config.infiniteZoom) {
       if (this.x < -100 || this.x > width + 100 ||
         this.y < -100 || this.y > height + 100) {
         this.respawn();
+        this.life = 1.0;
+        this.vx = (Math.random() - 0.5) * 2;
+        this.vy = (Math.random() - 0.5) * 2;
       }
     }
   }
@@ -113,22 +116,42 @@ class Particle {
     const intensity = Math.min(1, 500 / dist);
     const alpha = this.life * intensity;
 
-    // Efeito de redshift gravitacional
-    const redshift = Math.max(0, 1 - dist / 500);
-    const hue = this.hue + redshift * 60;
+    // Efeito de redshift gravitacional (mais pronunciado)
+    const redshift = Math.max(0, 1 - dist / 600);
+    const hue = this.hue + redshift * 80;
+
+    // Efeito de spaghettification - partículas esticam perto do buraco negro
+    const stretchFactor = Math.max(1, 5 / (dist / 20));
+    const angle = Math.atan2(dy, dx);
+
+    // Desenhar trail (rastro)
+    if (dist < 400) {
+      ctx.beginPath();
+      ctx.moveTo(this.x, this.y);
+      ctx.lineTo(this.x - this.vx * 3, this.y - this.vy * 3);
+      ctx.strokeStyle = `hsla(${hue}, 100%, 60%, ${alpha * 0.4})`;
+      ctx.lineWidth = this.size * 0.5;
+      ctx.stroke();
+    }
+
+    // Desenhar partícula com elongação
+    ctx.save();
+    ctx.translate(this.x, this.y);
+    ctx.rotate(angle);
 
     ctx.beginPath();
-    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    ctx.ellipse(0, 0, this.size * stretchFactor, this.size, 0, 0, Math.PI * 2);
     ctx.fillStyle = `hsla(${hue}, 100%, 70%, ${alpha})`;
-    ctx.fill();
 
     // Glow effect para partículas próximas
     if (dist < 300) {
-      ctx.shadowBlur = 10 * intensity;
-      ctx.shadowColor = `hsla(${hue}, 100%, 70%, ${alpha})`;
-      ctx.fill();
-      ctx.shadowBlur = 0;
+      ctx.shadowBlur = 15 * intensity;
+      ctx.shadowColor = `hsla(${hue}, 100%, 70%, ${alpha * 0.8})`;
     }
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    ctx.restore();
   }
 }
 
@@ -171,17 +194,21 @@ class AccretionDisk {
   draw() {
     this.rings.forEach((ring, index) => {
       const gradient = ctx.createRadialGradient(
-        centerX, centerY, ring.radius - 10,
-        centerX, centerY, ring.radius + 10
+        centerX, centerY, ring.radius - 15,
+        centerX, centerY, ring.radius + 15
       );
 
-      // Cores quentes no interior, frias no exterior
+      // Cores quentes no interior, frias no exterior (mais saturado)
       const temp = 1 - (index / this.numRings);
-      const hue = 280 - temp * 80; // De azul a laranja
+      const hue = 280 - temp * 100; // De azul a vermelho
+      const saturation = 100;
+      const lightness = 40 + temp * 30;
 
-      gradient.addColorStop(0, `hsla(${hue}, 100%, 50%, 0)`);
-      gradient.addColorStop(0.5, `hsla(${hue}, 100%, 60%, ${ring.opacity})`);
-      gradient.addColorStop(1, `hsla(${hue}, 100%, 50%, 0)`);
+      gradient.addColorStop(0, `hsla(${hue}, ${saturation}%, ${lightness}%, 0)`);
+      gradient.addColorStop(0.3, `hsla(${hue}, ${saturation}%, ${lightness + 10}%, ${ring.opacity * 0.6})`);
+      gradient.addColorStop(0.5, `hsla(${hue}, ${saturation}%, ${lightness + 20}%, ${ring.opacity})`);
+      gradient.addColorStop(0.7, `hsla(${hue}, ${saturation}%, ${lightness + 10}%, ${ring.opacity * 0.6})`);
+      gradient.addColorStop(1, `hsla(${hue}, ${saturation}%, ${lightness}%, 0)`);
 
       ctx.beginPath();
       ctx.arc(centerX, centerY, ring.radius, 0, Math.PI * 2);
@@ -189,11 +216,36 @@ class AccretionDisk {
       ctx.lineWidth = ring.thickness;
       ctx.stroke();
 
-      // Adicionar brilho
-      ctx.shadowBlur = 20;
-      ctx.shadowColor = `hsla(${hue}, 100%, 60%, ${ring.opacity * 0.5})`;
+      // Adicionar brilho intenso
+      ctx.shadowBlur = 30 * temp;
+      ctx.shadowColor = `hsla(${hue}, 100%, 70%, ${ring.opacity * 0.7})`;
       ctx.stroke();
       ctx.shadowBlur = 0;
+
+      // Adicionar hotspots (pontos quentes) no disco
+      if (index < this.numRings / 2) {
+        const numHotspots = 3 + Math.floor(Math.random() * 3);
+        for (let h = 0; h < numHotspots; h++) {
+          const hotspotAngle = ring.angle + (h * Math.PI * 2 / numHotspots);
+          const hotspotX = centerX + Math.cos(hotspotAngle) * ring.radius;
+          const hotspotY = centerY + Math.sin(hotspotAngle) * ring.radius;
+
+          const hotspotGradient = ctx.createRadialGradient(
+            hotspotX, hotspotY, 0,
+            hotspotX, hotspotY, 8
+          );
+          hotspotGradient.addColorStop(0, `hsla(${hue - 20}, 100%, 80%, ${ring.opacity * 0.8})`);
+          hotspotGradient.addColorStop(1, `hsla(${hue}, 100%, 60%, 0)`);
+
+          ctx.beginPath();
+          ctx.arc(hotspotX, hotspotY, 8, 0, Math.PI * 2);
+          ctx.fillStyle = hotspotGradient;
+          ctx.shadowBlur = 15;
+          ctx.shadowColor = `hsla(${hue - 20}, 100%, 70%, ${ring.opacity})`;
+          ctx.fill();
+          ctx.shadowBlur = 0;
+        }
+      }
     });
   }
 }
@@ -202,31 +254,79 @@ let accretionDisk = new AccretionDisk();
 
 // Buraco Negro (Event Horizon)
 function drawBlackHole() {
-  // Event Horizon (preto absoluto)
+  // Sombra externa (absorção de luz)
+  const outerShadow = ctx.createRadialGradient(
+    centerX, centerY, config.eventHorizon * 0.8,
+    centerX, centerY, config.eventHorizon * 1.5
+  );
+  outerShadow.addColorStop(0, 'rgba(0, 0, 0, 0.9)');
+  outerShadow.addColorStop(0.5, 'rgba(0, 0, 5, 0.6)');
+  outerShadow.addColorStop(1, 'rgba(0, 0, 0, 0)');
+
+  ctx.beginPath();
+  ctx.arc(centerX, centerY, config.eventHorizon * 1.5, 0, Math.PI * 2);
+  ctx.fillStyle = outerShadow;
+  ctx.fill();
+
+  // Photon Sphere (anel de luz triplo - mais realista)
+  const photonRadius = config.schwarzschildRadius * 1.5;
+
+  // Anel externo (mais fraco)
+  ctx.beginPath();
+  ctx.arc(centerX, centerY, photonRadius + 8, 0, Math.PI * 2);
+  ctx.strokeStyle = 'rgba(255, 180, 80, 0.15)';
+  ctx.lineWidth = 6;
+  ctx.shadowBlur = 25;
+  ctx.shadowColor = 'rgba(255, 180, 80, 0.4)';
+  ctx.stroke();
+
+  // Anel do meio
+  ctx.beginPath();
+  ctx.arc(centerX, centerY, photonRadius, 0, Math.PI * 2);
+  ctx.strokeStyle = 'rgba(255, 200, 100, 0.4)';
+  ctx.lineWidth = 3;
+  ctx.shadowBlur = 35;
+  ctx.shadowColor = 'rgba(255, 200, 100, 0.8)';
+  ctx.stroke();
+
+  // Anel interno (mais intenso)
+  ctx.beginPath();
+  ctx.arc(centerX, centerY, photonRadius - 5, 0, Math.PI * 2);
+  ctx.strokeStyle = 'rgba(255, 220, 150, 0.6)';
+  ctx.lineWidth = 2;
+  ctx.shadowBlur = 40;
+  ctx.shadowColor = 'rgba(255, 220, 150, 1)';
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+
+  // Event Horizon (preto absoluto com borda suave)
   const horizonGradient = ctx.createRadialGradient(
     centerX, centerY, 0,
     centerX, centerY, config.eventHorizon
   );
 
   horizonGradient.addColorStop(0, '#000000');
-  horizonGradient.addColorStop(0.7, '#000000');
-  horizonGradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+  horizonGradient.addColorStop(0.8, '#000000');
+  horizonGradient.addColorStop(0.95, 'rgba(5, 0, 10, 0.8)');
+  horizonGradient.addColorStop(1, 'rgba(0, 0, 0, 0.3)');
 
   ctx.beginPath();
   ctx.arc(centerX, centerY, config.eventHorizon, 0, Math.PI * 2);
   ctx.fillStyle = horizonGradient;
   ctx.fill();
 
-  // Photon Sphere (anel de luz)
-  const photonRadius = config.schwarzschildRadius * 1.5;
+  // Núcleo ultra-escuro (singularidade)
+  const singularityGradient = ctx.createRadialGradient(
+    centerX, centerY, 0,
+    centerX, centerY, config.schwarzschildRadius * 0.3
+  );
+  singularityGradient.addColorStop(0, '#000000');
+  singularityGradient.addColorStop(1, '#000000');
+
   ctx.beginPath();
-  ctx.arc(centerX, centerY, photonRadius, 0, Math.PI * 2);
-  ctx.strokeStyle = 'rgba(255, 200, 100, 0.3)';
-  ctx.lineWidth = 2;
-  ctx.shadowBlur = 30;
-  ctx.shadowColor = 'rgba(255, 200, 100, 0.8)';
-  ctx.stroke();
-  ctx.shadowBlur = 0;
+  ctx.arc(centerX, centerY, config.schwarzschildRadius * 0.3, 0, Math.PI * 2);
+  ctx.fillStyle = singularityGradient;
+  ctx.fill();
 }
 
 // Lente Gravitacional
@@ -298,7 +398,7 @@ class Star {
 let stars = [];
 function initStars() {
   stars = [];
-  for (let i = 0; i < 200; i++) {
+  for (let i = 0; i < 400; i++) {
     stars.push(new Star());
   }
 }
@@ -378,11 +478,30 @@ function updateFPS() {
   }
 }
 
+// Nebulosa de fundo
+function drawNebula() {
+  const nebulaGradient = ctx.createRadialGradient(
+    centerX, centerY, config.eventHorizon * 2,
+    centerX, centerY, Math.max(width, height) * 0.8
+  );
+
+  nebulaGradient.addColorStop(0, 'rgba(138, 43, 226, 0.03)');
+  nebulaGradient.addColorStop(0.3, 'rgba(75, 0, 130, 0.02)');
+  nebulaGradient.addColorStop(0.6, 'rgba(25, 25, 112, 0.015)');
+  nebulaGradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+
+  ctx.fillStyle = nebulaGradient;
+  ctx.fillRect(0, 0, width, height);
+}
+
 // Loop de Animação
 function animate() {
-  // Limpar canvas
-  ctx.fillStyle = 'rgba(0, 0, 10, 0.2)';
+  // Limpar canvas com trail effect
+  ctx.fillStyle = 'rgba(0, 0, 10, 0.15)';
   ctx.fillRect(0, 0, width, height);
+
+  // Desenhar nebulosa de fundo
+  drawNebula();
 
   // Desenhar estrelas de fundo
   stars.forEach(star => star.draw());
@@ -400,7 +519,7 @@ function animate() {
     particle.draw();
   });
 
-  // Desenhar buraco negro
+  // Desenhar buraco negro (por último para ficar na frente)
   drawBlackHole();
 
   // Aplicar lente gravitacional (cuidado: pode ser pesado)
@@ -507,16 +626,47 @@ function setupControls() {
     accretionDisk = new AccretionDisk();
   });
 
-  // Toggle controles
+  // Toggle controles (travar/destravar o painel)
   const toggleBtn = document.getElementById('toggleControls');
   const controlPanel = document.querySelector('.control-panel');
-  let controlsVisible = true;
+  const controls = document.querySelector('.controls');
+  let controlsLocked = false;
 
-  toggleBtn.addEventListener('click', () => {
-    controlsVisible = !controlsVisible;
-    if (controlsVisible) {
+  // Inicialmente escondido
+  controlPanel.classList.add('hidden');
+
+  toggleBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    controlsLocked = !controlsLocked;
+    
+    if (controlsLocked) {
+      // Travar aberto
       controlPanel.classList.remove('hidden');
+      toggleBtn.classList.add('locked');
+      toggleBtn.textContent = '🔒';
+      toggleBtn.title = 'Clique para destravar';
     } else {
+      // Destravar - esconde se o mouse não estiver sobre os controles
+      const isHovering = controls.matches(':hover');
+      if (!isHovering) {
+        controlPanel.classList.add('hidden');
+      }
+      toggleBtn.classList.remove('locked');
+      toggleBtn.textContent = '⚙️';
+      toggleBtn.title = 'Clique para travar aberto';
+    }
+  });
+
+  // Remover classe hidden ao passar o mouse (se não estiver travado)
+  controls.addEventListener('mouseenter', () => {
+    if (!controlsLocked) {
+      controlPanel.classList.remove('hidden');
+    }
+  });
+
+  // Adicionar classe hidden ao sair o mouse (se não estiver travado)
+  controls.addEventListener('mouseleave', () => {
+    if (!controlsLocked) {
       controlPanel.classList.add('hidden');
     }
   });
