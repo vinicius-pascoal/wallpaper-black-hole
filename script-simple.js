@@ -64,6 +64,7 @@ let config = {
   gravityStrength: 500,
   lensStrength: 50,
   accretionSpeed: 5,
+  audioSensitivity: 10,
   infiniteZoom: true,
   glslLens: false,
   eventHorizon: 80,
@@ -857,6 +858,11 @@ function setupControls() {
   document.getElementById('accretionSpeed').addEventListener('input', (e) => {
     config.accretionSpeed = parseInt(e.target.value);
     document.getElementById('accretionValue').textContent = config.accretionSpeed;
+  });
+
+  document.getElementById('audioSensitivity').addEventListener('input', (e) => {
+    config.audioSensitivity = parseInt(e.target.value);
+    document.getElementById('audioSensitivityValue').textContent = config.audioSensitivity;
   });
 
   document.getElementById('presetSelector').addEventListener('change', (e) => {
@@ -2415,9 +2421,6 @@ function triggerRandomEasterEgg() {
 
   console.log(`🎉 Easter Egg Aleatório Ativado: ${randomEgg.name} - ${randomEgg.description}`);
 
-  // Mostrar notificação para o usuário
-  showEasterEggNotification(randomEgg.name, randomEgg.description);
-
   // Marcar como ativo
   easterEggActive = true;
 
@@ -2518,3 +2521,196 @@ setTimeout(() => {
     console.error('❌ Erro ao ativar easter egg de demonstração:', error);
   }
 }, 5000);
+
+// ========================================
+// Sistema de Equalizador Circular Responsivo ao Áudio
+// ========================================
+
+class CircularAudioEqualizer {
+  constructor({
+    containerId = 'circularAudioEqualizer',
+    barCount = 128,
+    radius = 250,
+    beatThreshold = 0.12,
+    beatCooldownMs = 300,
+    onBeat = () => {
+      document.body.classList.remove('beat');
+      void document.body.offsetWidth;
+      document.body.classList.add('beat');
+    }
+  } = {}) {
+    this.equalizer = document.getElementById(containerId);
+    this.barCount = barCount;
+    this.radius = radius;
+    this.threshold = beatThreshold;
+    this.beatCooldown = beatCooldownMs;
+    this.onBeat = onBeat;
+
+    this.bars = [];
+    this.smooth = new Array(barCount).fill(0);
+    this.lastBeatTime = 0;
+    this.bpm = 0;
+    this.bassSmooth = 0;
+
+    this._createCircularBars();
+  }
+
+  _createCircularBars() {
+    for (let i = 0; i < this.barCount; i++) {
+      const bar = document.createElement('div');
+      bar.className = 'circular-audio-bar';
+
+      // Posicionar em círculo
+      const angle = (i / this.barCount) * Math.PI * 2;
+      const x = Math.cos(angle) * this.radius;
+      const y = Math.sin(angle) * this.radius;
+
+      // Rotacionar a barra para apontar para fora do centro
+      const rotation = (angle * 180 / Math.PI) + 90;
+
+      bar.style.transform = `translate(-50%, -50%) translate(${x}px, ${y}px) rotate(${rotation}deg) scaleY(0)`;
+      bar.dataset.angle = angle;
+      bar.dataset.baseX = x;
+      bar.dataset.baseY = y;
+      bar.dataset.rotation = rotation;
+
+      this.equalizer.appendChild(bar);
+      this.bars.push(bar);
+    }
+  }
+
+  // Alimenta o equalizador com um array de FFT (0..1)
+  update(audioArray) {
+    const n = this.barCount;
+    const sensitivity = config.audioSensitivity / 10; // Normalizar para 0.1 - 2.0
+
+    for (let i = 0; i < n; i++) {
+      const idx = Math.floor((i / n) * audioArray.length);
+      const val = audioArray[idx] || 0;
+
+      // Suavização
+      this.smooth[i] = this.smooth[i] * 0.85 + val * 0.15;
+      const s = this.smooth[i];
+      const scale = Math.min(s * 8 * sensitivity, 12 * sensitivity);
+
+      const bar = this.bars[i];
+      const x = parseFloat(bar.dataset.baseX);
+      const y = parseFloat(bar.dataset.baseY);
+      const rotation = parseFloat(bar.dataset.rotation);
+
+      bar.style.transform = `translate(-50%, -50%) translate(${x}px, ${y}px) rotate(${rotation}deg) scaleY(${scale})`;
+      bar.style.opacity = Math.min(s * 4 * sensitivity, 1);
+    }
+
+    // Graves + batida/BPM
+    let bass = 0;
+    const bassBins = Math.min(8, audioArray.length);
+    for (let i = 0; i < bassBins; i++) bass += audioArray[i];
+    bass /= bassBins;
+    this.bassSmooth = this.bassSmooth * 0.8 + bass * 0.2;
+
+    const now = performance.now();
+    if (this.bassSmooth > this.threshold && now - this.lastBeatTime > this.beatCooldown) {
+      const interval = now - this.lastBeatTime;
+      this.lastBeatTime = now;
+      if (interval > 0) this.bpm = Math.round(60000 / interval);
+      if (this.bpm > 60 && this.bpm < 200) this.onBeat();
+    }
+  }
+}
+
+// Inicializar equalizador circular
+const circularEqualizer = new CircularAudioEqualizer({
+  barCount: 96,
+  radius: config.schwarzschildRadius * 2.2,
+  beatThreshold: 0.15,
+  beatCooldownMs: 280
+});
+
+// Atualizar raio do equalizador quando o tamanho do buraco negro mudar
+function updateEqualizerRadius() {
+  // Posicionar logo após o anel externo (2.2x o raio de Schwarzschild)
+  let radius = (config.schwarzschildRadius || 60) * 2.2;
+
+  // Ajustar para compensar distorção GLSL quando ativa
+  if (config.glslLens && config.lensStrength > 0) {
+    // A distorção da lente puxa objetos visualmente para dentro
+    // Compensar aumentando o raio proporcionalmente à força da lente
+    const lensCompensation = 1 + (config.lensStrength / 100) * 0.3;
+    radius *= lensCompensation;
+  }
+
+  circularEqualizer.radius = radius;
+
+  // Reposicionar as barras
+  circularEqualizer.bars.forEach((bar, i) => {
+    const angle = (i / circularEqualizer.barCount) * Math.PI * 2;
+    const x = Math.cos(angle) * radius;
+    const y = Math.sin(angle) * radius;
+    const rotation = (angle * 180 / Math.PI) + 90;
+
+    bar.dataset.baseX = x;
+    bar.dataset.baseY = y;
+    bar.dataset.rotation = rotation;
+  });
+}
+
+// Atualizar raio a cada frame
+setInterval(() => {
+  updateEqualizerRadius();
+}, 100);
+
+// Função para iniciar captura de áudio do microfone
+async function startMicrophoneAudio() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const src = ctx.createMediaStreamSource(stream);
+    const analyser = ctx.createAnalyser();
+    analyser.fftSize = 256; // 128 bins de frequência
+    analyser.smoothingTimeConstant = 0.8;
+    const data = new Uint8Array(analyser.frequencyBinCount);
+    src.connect(analyser);
+
+    function loop() {
+      analyser.getByteFrequencyData(data);
+      // Normalizar 0..255 -> 0..1
+      const arr = Array.from(data, (v) => v / 255);
+      circularEqualizer.update(arr);
+      requestAnimationFrame(loop);
+    }
+    loop();
+
+    console.log('🎤 Áudio do microfone capturado com sucesso!');
+    return true;
+  } catch (error) {
+    console.warn('⚠️ Não foi possível acessar o microfone:', error.message);
+    return false;
+  }
+}
+
+// Suporte para Wallpaper Engine
+if (window.wallpaperRegisterAudioListener) {
+  window.wallpaperRegisterAudioListener((audioArray) => {
+    circularEqualizer.update(audioArray);
+  });
+  console.log('🎵 Equalizador conectado ao Wallpaper Engine');
+} else {
+  // Tentar usar microfone em ambientes web
+  console.log('🌐 Ambiente web detectado - tentando usar microfone...');
+  console.log('💡 Clique na página para ativar a captura de áudio');
+
+  // Aguardar interação do usuário para ativar áudio (requisito dos navegadores)
+  const activateAudio = async () => {
+    const success = await startMicrophoneAudio();
+    if (success) {
+      document.removeEventListener('click', activateAudio);
+      document.removeEventListener('keydown', activateAudio);
+    }
+  };
+
+  document.addEventListener('click', activateAudio, { once: true });
+  document.addEventListener('keydown', activateAudio, { once: true });
+}
+
+console.log('🎵 Sistema de Equalizador Circular de Áudio inicializado!');

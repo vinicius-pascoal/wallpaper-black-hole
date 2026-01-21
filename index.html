@@ -10,6 +10,9 @@
     <canvas id="blackHoleCanvas"></canvas>
     <canvas id="webglCanvas"></canvas>
     
+    <!-- Equalizador Circular de Áudio -->
+    <div id="circularAudioEqualizer" aria-hidden="true"></div>
+    
     <!-- Input Escondido para Easter Eggs -->
     <div id="secretInputContainer" class="secret-input-container">
         <input type="text" id="secretInput" class="secret-input" placeholder="🔮 Digite aqui..." maxlength="50">
@@ -58,6 +61,14 @@
                 </label>
                 <input type="range" id="accretionSpeed" min="1" max="20" value="5" step="1">
                 <span id="accretionValue">5</span>
+            </div>
+            
+            <div class="control-group">
+                <label for="audioSensitivity">
+                    <span class="icon">🎵</span> Sensibilidade do Áudio
+                </label>
+                <input type="range" id="audioSensitivity" min="1" max="20" value="10" step="1">
+                <span id="audioSensitivityValue">10</span>
             </div>
             
             <hr style="border: 1px solid rgba(138, 43, 226, 0.3); margin: 20px 0;">
