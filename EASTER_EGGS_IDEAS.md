@@ -211,6 +211,8 @@ Baseado em impacto visual, facilidade de implementação e diversão:
 - [x] MATRIX - Código caindo
 - [x] PORTAL - Portais azul e laranja com teletransporte
 - [x] GLITCH - Corrupção digital com RGB split e scan lines
+- [x] TESLA - Bobina de Tesla com raios elétricos
+- [x] DOOM - Pentágono vermelho demoníaco girando
 
 ### 🔜 Pendentes
 - [ ] Todos os listados acima (27 ideias)

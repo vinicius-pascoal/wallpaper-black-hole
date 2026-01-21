@@ -933,6 +933,14 @@ function setupControls() {
         handleGlitch();
         secretInput.value = '';
         secretInput.blur();
+      } else if (command === 'tesla') {
+        handleTesla();
+        secretInput.value = '';
+        secretInput.blur();
+      } else if (command === 'doom') {
+        handleDoom();
+        secretInput.value = '';
+        secretInput.blur();
       } else if (command === 'help' || command === 'ajuda') {
         showSecretHelp();
         secretInput.value = '';
@@ -1130,6 +1138,8 @@ function showSecretHelp() {
     matrix    - Modo Matrix com código caindo 💚
     portal    - Portais laranja e azul aparecem 🔵🟠
     glitch    - Corrupção digital extrema 📺
+    tesla     - Bobina de Tesla com raios elétricos ⚡
+    doom      - RIP AND TEAR! Pentágono demoníaco 😈
     ajuda     - Mostra esta mensagem
   `;
 
@@ -1724,6 +1734,307 @@ function handleGlitch() {
     if (stat) stat.remove();
     if (scanStyle) scanStyle.remove();
   }, 6000);
+}
+
+// Easter Egg: Tesla - Bobina de Tesla com raios elétricos
+function handleTesla() {
+  console.log('⚡ TESLA COIL ACTIVATED!');
+
+  const canvas = document.getElementById('blackHoleCanvas');
+  const ctx = canvas.getContext('2d');
+
+  // Notificação
+  const teslaNotif = document.createElement('div');
+  teslaNotif.style.cssText = `
+    position: fixed;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(50, 0, 100, 0.95);
+    color: #00ffff;
+    padding: 20px 40px;
+    border: 3px solid #8800ff;
+    border-radius: 10px;
+    font-family: 'Courier New', monospace;
+    font-size: 24px;
+    font-weight: bold;
+    z-index: 10001;
+    text-align: center;
+    box-shadow: 0 0 40px rgba(136, 0, 255, 0.8);
+    animation: teslaGlow 0.5s ease infinite;
+  `;
+  teslaNotif.innerHTML = '⚡ TESLA COIL<br/><span style="font-size: 14px; color: #00ffff;">HIGH VOLTAGE WARNING</span>';
+  document.body.appendChild(teslaNotif);
+
+  // Adicionar animações CSS
+  if (!document.getElementById('teslaStyle')) {
+    const style = document.createElement('style');
+    style.id = 'teslaStyle';
+    style.textContent = `
+      @keyframes teslaGlow {
+        0%, 100% { 
+          box-shadow: 0 0 40px rgba(136, 0, 255, 0.8);
+          text-shadow: 0 0 10px #00ffff;
+        }
+        50% { 
+          box-shadow: 0 0 60px rgba(136, 0, 255, 1), 0 0 80px rgba(0, 255, 255, 0.6);
+          text-shadow: 0 0 20px #00ffff, 0 0 30px #8800ff;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  // Canvas para raios elétricos
+  const lightningCanvas = document.createElement('canvas');
+  lightningCanvas.id = 'teslaLightning';
+  lightningCanvas.width = window.innerWidth;
+  lightningCanvas.height = window.innerHeight;
+  lightningCanvas.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    pointer-events: none;
+  `;
+  document.body.appendChild(lightningCanvas);
+
+  const lightCtx = lightningCanvas.getContext('2d');
+
+  // Função para desenhar raio elétrico entre dois pontos
+  function drawLightning(x1, y1, x2, y2, color, branches = 3) {
+    lightCtx.strokeStyle = color;
+    lightCtx.lineWidth = 2;
+    lightCtx.shadowBlur = 15;
+    lightCtx.shadowColor = color;
+
+    lightCtx.beginPath();
+    lightCtx.moveTo(x1, y1);
+
+    const segments = 10;
+    const dx = (x2 - x1) / segments;
+    const dy = (y2 - y1) / segments;
+
+    for (let i = 0; i < segments; i++) {
+      const offsetX = (Math.random() - 0.5) * 30;
+      const offsetY = (Math.random() - 0.5) * 30;
+      const x = x1 + dx * i + offsetX;
+      const y = y1 + dy * i + offsetY;
+      lightCtx.lineTo(x, y);
+
+      // Ramificações
+      if (branches > 0 && Math.random() > 0.7) {
+        const branchX = x + (Math.random() - 0.5) * 100;
+        const branchY = y + (Math.random() - 0.5) * 100;
+        drawLightning(x, y, branchX, branchY, color, branches - 1);
+      }
+    }
+
+    lightCtx.lineTo(x2, y2);
+    lightCtx.stroke();
+  }
+
+  // Animação de raios conectando partículas
+  const teslaInterval = setInterval(() => {
+    lightCtx.clearRect(0, 0, lightningCanvas.width, lightningCanvas.height);
+
+    // Raios do centro para partículas
+    const centerX = window.innerWidth / 2;
+    const centerY = window.innerHeight / 2;
+
+    // Conectar algumas partículas aleatórias
+    const particlesToConnect = Math.min(5, particles.length);
+    for (let i = 0; i < particlesToConnect; i++) {
+      const particle = particles[Math.floor(Math.random() * particles.length)];
+      if (particle && particle.x && particle.y) {
+        const colors = ['#8800ff', '#00ffff', '#ff00ff', '#0088ff'];
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        drawLightning(centerX, centerY, particle.x, particle.y, color, 2);
+      }
+    }
+
+    // Raios entre partículas
+    if (particles.length > 1) {
+      for (let i = 0; i < 3; i++) {
+        const p1 = particles[Math.floor(Math.random() * particles.length)];
+        const p2 = particles[Math.floor(Math.random() * particles.length)];
+        if (p1 && p2 && p1 !== p2 && p1.x && p2.x) {
+          const dist = Math.hypot(p1.x - p2.x, p1.y - p2.y);
+          if (dist < 200) {
+            const colors = ['#8800ff', '#00ffff'];
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            drawLightning(p1.x, p1.y, p2.x, p2.y, color, 1);
+          }
+        }
+      }
+    }
+  }, 100);
+
+  // Efeito de aumento temporário da radiação Hawking
+  const originalHawking = config.hawkingRadiation;
+  config.hawkingRadiation = true;
+
+  // Aplicar filtro roxo/azul temporariamente
+  const originalFilter = canvas.style.filter;
+  canvas.style.filter = 'hue-rotate(270deg) saturate(1.5) brightness(1.2)';
+
+  // Remover após 8 segundos
+  setTimeout(() => {
+    clearInterval(teslaInterval);
+    config.hawkingRadiation = originalHawking;
+    canvas.style.filter = originalFilter;
+
+    if (teslaNotif) teslaNotif.remove();
+    const lightning = document.getElementById('teslaLightning');
+    if (lightning) lightning.remove();
+  }, 8000);
+}
+
+function handleDoom() {
+  console.log('😈 Easter Egg DOOM ativado!');
+  
+  // Notificação RIP AND TEAR
+  const notification = document.createElement('div');
+  notification.textContent = '😈 RIP AND TEAR! 😈';
+  notification.style.cssText = `
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(135deg, #8b0000, #ff0000, #8b0000);
+    color: #fff;
+    padding: 30px 60px;
+    border-radius: 10px;
+    font-family: 'Courier New', monospace;
+    font-size: 32px;
+    font-weight: bold;
+    z-index: 10000;
+    text-shadow: 0 0 20px #ff0000, 0 0 40px #8b0000;
+    border: 4px solid #8b0000;
+    box-shadow: 0 0 30px #ff0000, inset 0 0 20px rgba(139, 0, 0, 0.5);
+    animation: doomPulse 0.5s ease-in-out infinite;
+  `;
+  document.body.appendChild(notification);
+  
+  // Adicionar animação de pulsação
+  const style = document.createElement('style');
+  style.id = 'doomStyle';
+  style.textContent = `
+    @keyframes doomPulse {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); }
+      50% { transform: translate(-50%, -50%) scale(1.05); }
+    }
+    @keyframes pentagonSpin {
+      from { transform: translate(-50%, -50%) rotate(0deg); }
+      to { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+    @keyframes demonGlow {
+      0%, 100% { filter: drop-shadow(0 0 20px #ff0000) brightness(1.2); }
+      50% { filter: drop-shadow(0 0 40px #ff0000) brightness(1.5); }
+    }
+  `;
+  document.head.appendChild(style);
+  
+  setTimeout(() => {
+    notification.remove();
+  }, 2000);
+  
+  // Criar pentágono demoníaco girando
+  const pentagonContainer = document.createElement('div');
+  pentagonContainer.id = 'doomPentagon';
+  pentagonContainer.style.cssText = `
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    height: 400px;
+    z-index: 1000;
+    animation: pentagonSpin 4s linear infinite;
+    pointer-events: none;
+  `;
+  
+  // Criar SVG do pentágono invertido (pentagrama)
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('width', '400');
+  svg.setAttribute('height', '400');
+  svg.setAttribute('viewBox', '0 0 400 400');
+  svg.style.cssText = 'filter: drop-shadow(0 0 20px #ff0000);';
+  
+  // Criar pentagrama (estrela de 5 pontas)
+  const star = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  const centerX = 200;
+  const centerY = 200;
+  const outerRadius = 180;
+  const innerRadius = 70;
+  const points = 5;
+  
+  let path = 'M ';
+  for (let i = 0; i < points * 2; i++) {
+    const angle = (i * Math.PI / points) - Math.PI / 2;
+    const radius = i % 2 === 0 ? outerRadius : innerRadius;
+    const x = centerX + radius * Math.cos(angle);
+    const y = centerY + radius * Math.sin(angle);
+    path += `${x},${y} `;
+  }
+  path += 'Z';
+  
+  star.setAttribute('d', path);
+  star.setAttribute('fill', 'none');
+  star.setAttribute('stroke', '#ff0000');
+  star.setAttribute('stroke-width', '8');
+  star.style.animation = 'demonGlow 1s ease-in-out infinite';
+  
+  // Adicionar círculo externo
+  const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  circle.setAttribute('cx', '200');
+  circle.setAttribute('cy', '200');
+  circle.setAttribute('r', '190');
+  circle.setAttribute('fill', 'none');
+  circle.setAttribute('stroke', '#8b0000');
+  circle.setAttribute('stroke-width', '6');
+  
+  svg.appendChild(circle);
+  svg.appendChild(star);
+  pentagonContainer.appendChild(svg);
+  document.body.appendChild(pentagonContainer);
+  
+  // Aplicar filtro vermelho ao canvas
+  const originalFilter = blackHoleCanvas.style.filter || '';
+  blackHoleCanvas.style.filter = 'hue-rotate(320deg) saturate(3) brightness(0.8) contrast(1.5)';
+  
+  // Salvar configurações originais
+  const originalHawking = config.hawkingRadiation;
+  const originalAccretion = config.accretionDisk;
+  
+  // Aumentar efeitos demoníacos
+  config.hawkingRadiation = true;
+  config.accretionDisk = true;
+  
+  // Modificar cores das partículas temporariamente para vermelho
+  const originalParticleUpdate = Particle.prototype.update;
+  Particle.prototype.update = function(blackHole) {
+    originalParticleUpdate.call(this, blackHole);
+    
+    // Tornar partículas vermelhas
+    const redIntensity = Math.floor(200 + Math.random() * 55);
+    this.color = `rgb(${redIntensity}, 0, 0)`;
+  };
+  
+  // Limpar após 8 segundos
+  setTimeout(() => {
+    pentagonContainer.remove();
+    const doomStyle = document.getElementById('doomStyle');
+    if (doomStyle) doomStyle.remove();
+    blackHoleCanvas.style.filter = originalFilter;
+    config.hawkingRadiation = originalHawking;
+    config.accretionDisk = originalAccretion;
+    Particle.prototype.update = originalParticleUpdate;
+    
+    console.log('😈 DOOM desativado');
+  }, 8000);
 }
 
 // Controle de visibilidade do painel

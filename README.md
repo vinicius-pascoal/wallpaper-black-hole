@@ -169,6 +169,12 @@ Digite **'portal'** para ativar os **Portais do Portal**. Dois portais (azul e l
 #### 📺 glitch
 Digite **'glitch'** para ativar **corrupção digital extrema**! Efeitos de RGB split, scan lines, static noise e distorções visuais por 6 segundos. "REALITY.CORRUPTED" ⚠️
 
+#### ⚡ tesla
+Digite **'tesla'** para ativar a **Bobina de Tesla**! Raios elétricos roxos e azuis conectam as partículas entre si e com o buraco negro por 8 segundos. "HIGH VOLTAGE WARNING" ⚡
+
+#### 😈 doom
+Digite **'doom'** para ativar o modo **DOOM**! Um pentagrama demoníaco vermelho gira ao redor do buraco negro enquanto um filtro infernal transforma tudo em vermelho. "RIP AND TEAR!" por 8 segundos! 🔥
+
 #### ❓ ajuda
 Digite **'ajuda'** ou **'help'** para ver a lista completa de comandos disponíveis em uma notificação estilo terminal.
 
@@ -210,6 +216,8 @@ Passe o mouse no **topo central da tela** para revelar o campo de entrada secret
 - [x] **matrix** - Código verde caindo estilo Matrix por 8 segundos 💚
 - [x] **portal** - Dois portais aparecem e partículas se teletransportam entre eles por 12 segundos 🔵🟠
 - [x] **glitch** - Corrupção digital extrema com RGB split e scan lines por 6 segundos 📺
+- [x] **tesla** - Bobina de Tesla com raios elétricos roxos/azuis conectando partículas por 8 segundos ⚡
+- [x] **doom** - Pentagrama demoníaco vermelho girando com filtro infernal por 8 segundos 😈
 - [x] **ajuda** - Mostra lista de comandos disponíveis
 - [x] **Gato de Schrödinger** - Partículas quânticas aparecem automaticamente a cada 2 segundos
 
