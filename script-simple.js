@@ -2120,7 +2120,7 @@ function handlePacman() {
     animation: pacmanOrbit 4s linear infinite;
     pointer-events: none;
   `;
-  
+
   const pacmanImg = document.createElement('img');
   pacmanImg.src = 'imgs/pacman.gif';
   pacmanImg.style.cssText = `
@@ -2135,7 +2135,7 @@ function handlePacman() {
     pacman.style.borderRadius = '50%';
     pacman.style.clipPath = 'polygon(50% 50%, 100% 0%, 100% 100%)';
   };
-  
+
   pacman.appendChild(pacmanImg);
   document.body.appendChild(pacman);
 
@@ -2363,3 +2363,143 @@ animate();
 
 console.log('🌑 Buraco Negro inicializado com sucesso!');
 console.log('Presets disponíveis:', Object.keys(BLACK_HOLE_PRESETS));
+
+// ========================================
+// Sistema de Easter Eggs Aleatórios (a cada 30 minutos)
+// ========================================
+
+let easterEggActive = false;
+
+function getAvailableEasterEggs() {
+  return [
+    { name: '42', handler: handleEasterEgg42, description: 'Toalha sendo sugada' },
+    { name: 'RETRO', handler: handleEasterEggRetro, description: 'Modo 8-bit retrô' },
+    { name: 'NYAN', handler: handleEasterEggNyan, description: 'Nyan Cat orbitando' },
+    { name: 'TARDIS', handler: handleEasterEggTardis, description: 'TARDIS piscando' },
+    { name: 'MATRIX', handler: handleEasterEggMatrix, description: 'Código Matrix caindo' },
+    { name: 'PORTAL', handler: handleEasterEggPortal, description: 'Portais azul e laranja' },
+    { name: 'GLITCH', handler: handleEasterEggGlitch, description: 'Corrupção digital' },
+    { name: 'TESLA', handler: handleEasterEggTesla, description: 'Bobina de Tesla' },
+    { name: 'DOOM', handler: handleEasterEggDoom, description: 'Pentágono demoníaco' },
+    { name: 'PACMAN', handler: handleEasterEggPacman, description: 'Pac-Man e fantasmas' }
+  ];
+}
+
+function triggerRandomEasterEgg() {
+  // Não ativar se já houver um easter egg ativo
+  if (easterEggActive) {
+    console.log('⏸️ Easter egg já está ativo, pulando...');
+    return;
+  }
+
+  // Obter lista de easter eggs disponíveis
+  const availableEasterEggs = getAvailableEasterEggs();
+
+  // Selecionar um easter egg aleatório
+  const randomEgg = availableEasterEggs[Math.floor(Math.random() * availableEasterEggs.length)];
+
+  console.log(`🎉 Easter Egg Aleatório Ativado: ${randomEgg.name} - ${randomEgg.description}`);
+
+  // Mostrar notificação para o usuário
+  showEasterEggNotification(randomEgg.name, randomEgg.description);
+
+  // Marcar como ativo
+  easterEggActive = true;
+
+  // Executar o easter egg
+  try {
+    randomEgg.handler();
+  } catch (error) {
+    console.error(`Erro ao executar easter egg ${randomEgg.name}:`, error);
+    easterEggActive = false;
+  }
+
+  // Marcar como inativo após 20 segundos (tempo máximo de qualquer easter egg)
+  setTimeout(() => {
+    easterEggActive = false;
+    console.log(`✅ Easter egg ${randomEgg.name} finalizado`);
+  }, 20000);
+}
+
+function showEasterEggNotification(name, description) {
+  const notification = document.createElement('div');
+  notification.style.cssText = `
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.9);
+    border: 3px solid #00ffff;
+    border-radius: 15px;
+    padding: 30px 50px;
+    font-family: 'Courier New', monospace;
+    color: #00ffff;
+    font-size: 28px;
+    font-weight: bold;
+    text-align: center;
+    z-index: 100000;
+    pointer-events: none;
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.8), inset 0 0 30px rgba(0, 255, 255, 0.2);
+    animation: easterEggNotif 3s ease-in-out forwards;
+  `;
+
+  notification.innerHTML = `
+    <div style="font-size: 36px; margin-bottom: 15px;">🎮 EASTER EGG ATIVADO! 🎮</div>
+    <div style="font-size: 24px; color: #ffff00; text-shadow: 0 0 10px #ffff00;">${name}</div>
+    <div style="font-size: 16px; color: #ffffff; margin-top: 10px; opacity: 0.8;">${description}</div>
+  `;
+
+  // Adicionar animação CSS se ainda não existir
+  if (!document.getElementById('easterEggNotifStyle')) {
+    const style = document.createElement('style');
+    style.id = 'easterEggNotifStyle';
+    style.textContent = `
+      @keyframes easterEggNotif {
+        0% {
+          opacity: 0;
+          transform: translate(-50%, -50%) scale(0.5);
+        }
+        20% {
+          opacity: 1;
+          transform: translate(-50%, -50%) scale(1.1);
+        }
+        80% {
+          opacity: 1;
+          transform: translate(-50%, -50%) scale(1);
+        }
+        100% {
+          opacity: 0;
+          transform: translate(-50%, -50%) scale(0.9);
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  document.body.appendChild(notification);
+
+  // Remover após a animação
+  setTimeout(() => {
+    notification.remove();
+  }, 3000);
+}
+
+// Configurar timer de 30 minutos (1800000 ms)
+const EASTER_EGG_INTERVAL = 30 * 60 * 1000; // 30 minutos
+
+setInterval(() => {
+  triggerRandomEasterEgg();
+}, EASTER_EGG_INTERVAL);
+
+console.log(`🎮 Sistema de Easter Eggs Aleatórios ativado! Próximo em 30 minutos.`);
+console.log(`📋 Easter Eggs disponíveis: ${getAvailableEasterEggs().length}`);
+
+// Ativar um easter egg logo no início (após 5 segundos) para demonstração
+setTimeout(() => {
+  console.log('🎮 Ativando easter egg inicial de demonstração...');
+  try {
+    triggerRandomEasterEgg();
+  } catch (error) {
+    console.error('❌ Erro ao ativar easter egg de demonstração:', error);
+  }
+}, 5000);
