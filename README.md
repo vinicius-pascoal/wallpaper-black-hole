@@ -160,7 +160,7 @@ O sistema gera espontaneamente **partículas de Schrödinger** que **existem e n
 - [ ] **Trajetórias de Geodésicas** - Visualização de caminhos de luz
 
 ### 🎨 Melhorias Visuais
-- [ ] **Neblosa de Fundo** - Galáxias e nebulosas ao fundo
+- [x] **Neblosa de Fundo** - Galáxias e nebulosas ao fundo
 - [ ] **Partículas 3D** - Sistema de partículas com Three.js
 - [ ] **Bloom Effect** - Post-processing para brilho intenso
 - [ ] **Motion Blur** - Rastro de movimento nas partículas

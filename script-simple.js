@@ -73,6 +73,7 @@ let config = {
   ergosphere: false,
   frameDragging: false,
   retroMode: false,
+  nebulaBackground: true,
   schrodingerMode: false
 };
 
@@ -435,6 +436,76 @@ class HawkingRadiation {
   }
 }
 
+// Neblosa de Fundo - Galáxias e Nebulosas
+class NebulaBackground {
+  constructor() {
+    this.nebulas = [];
+    this.generateNebulas();
+  }
+
+  generateNebulas() {
+    // Criar várias manchas nebulosas com cores diferentes
+    for (let i = 0; i < 5; i++) {
+      this.nebulas.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        radius: Math.random() * 200 + 150,
+        hue: Math.random() * 60 + 200, // Azul a roxo
+        intensity: Math.random() * 0.3 + 0.2,
+        rotation: Math.random() * Math.PI * 2
+      });
+    }
+  }
+
+  draw() {
+    // Desenhar nebulosas
+    this.nebulas.forEach(nebula => {
+      const gradient = ctx.createRadialGradient(
+        nebula.x, nebula.y, 0,
+        nebula.x, nebula.y, nebula.radius
+      );
+
+      const hsl = `hsl(${nebula.hue}, 70%, 50%)`;
+      gradient.addColorStop(0, `rgba(${this.hslToRgb(nebula.hue, 70, 50).join(',')}, ${nebula.intensity * 0.6})`);
+      gradient.addColorStop(0.5, `rgba(${this.hslToRgb(nebula.hue, 70, 50).join(',')}, ${nebula.intensity * 0.3})`);
+      gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+
+      ctx.beginPath();
+      ctx.arc(nebula.x, nebula.y, nebula.radius, 0, Math.PI * 2);
+      ctx.fillStyle = gradient;
+      ctx.fill();
+    });
+  }
+
+  hslToRgb(h, s, l) {
+    h = h / 360;
+    s = s / 100;
+    l = l / 100;
+
+    let r, g, b;
+    if (s === 0) {
+      r = g = b = l;
+    } else {
+      const hue2rgb = (p, q, t) => {
+        if (t < 0) t += 1;
+        if (t > 1) t -= 1;
+        if (t < 1 / 6) return p + (q - p) * 6 * t;
+        if (t < 1 / 2) return q;
+        if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+        return p;
+      };
+
+      const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+      const p = 2 * l - q;
+      r = hue2rgb(p, q, h + 1 / 3);
+      g = hue2rgb(p, q, h);
+      b = hue2rgb(p, q, h - 1 / 3);
+    }
+
+    return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+  }
+}
+
 // Background com estrelas (versão sutil)
 function drawStarField() {
   for (let i = 0; i < stars.length; i++) {
@@ -614,8 +685,12 @@ let stars = [];
 let accretionDisk;
 let topJet, bottomJet;
 let hawkingRad;
+let nebula;
 
 function initScene() {
+  // Neblosa de fundo
+  nebula = new NebulaBackground();
+
   // Partículas
   particles = [];
   for (let i = 0; i < config.particleCount; i++) {
@@ -682,6 +757,11 @@ function animate() {
   bgGradient.addColorStop(1, 'rgba(0, 0, 0, 0.15)');
   ctx.fillStyle = bgGradient;
   ctx.fillRect(0, 0, width, height);
+
+  // Neblosa de fundo
+  if (config.nebulaBackground && nebula) {
+    nebula.draw();
+  }
 
   // Stars (mais sutis)
   drawStarField();
@@ -808,6 +888,10 @@ function setupControls() {
 
   document.getElementById('frameDragging').addEventListener('change', (e) => {
     config.frameDragging = e.target.checked;
+  });
+
+  document.getElementById('nebulaBackground').addEventListener('change', (e) => {
+    config.nebulaBackground = e.target.checked;
   });
 
   document.getElementById('resetBtn').addEventListener('click', () => {
