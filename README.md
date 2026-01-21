@@ -141,7 +141,18 @@ wallpaper-black-hole/
 4. **Preset M87**: Massa 280, Partículas 1500 para efeito mais realista
 5. **Lente GLSL**: Ativar para ver aberração cromática e redshift em tempo real
 
-## � Melhorias Futuras
+## 🎮 Easter Eggs Secretos
+
+### 🎯 Pressionar '42'
+Digite a sequência **'42'** no teclado para ativar a referência ao **Guia do Mochileiro das Galáxias**. Uma mensagem especial aparecerá com efeito visual no buraco negro! ✨
+
+### 🎨 Modo Retro
+Pressione **Ctrl+R** (ou Shift+R) para ativar o **Modo Retro 8-bit**. O visual pixelado transforma a experiência em um retro clássico dos anos 80! 🎮
+
+### 🐱 Gato de Schrödinger
+O sistema gera espontaneamente **partículas de Schrödinger** que **existem e não existem simultaneamente**. Observe-as alternando entre visível (normal) e fantasmagórico (semi-transparente)! 👻
+
+## 📋 Melhorias Futuras
 
 ### 🎯 Funcionalidades Planejadas
 - [ ] **Simulação de Acreção Realística** - Física de fluidos no disco
@@ -164,9 +175,9 @@ wallpaper-black-hole/
 - [ ] **Lançar Partículas** - Clique para adicionar partículas
 
 ### 🎁 Easter Eggs e Surpresas
-- [ ] **Pressionar '42'** - Referência ao Guia do Mochileiro das Galáxias
-- [ ] **Modo Retro** - Visual pixelado 8-bit ao pressionar selecionar no painel
-- [ ] **Gato de Schrödinger** - Partícula especial que existe/não existe simultaneamente
+- [x] **Pressionar '42'** - Referência ao Guia do Mochileiro das Galáxias
+- [x] **Modo Retro** - Visual pixelado 8-bit ao pressionar selecionar no painel
+- [x] **Gato de Schrödinger** - Partícula especial que existe/não existe simultaneamente
 
 
 

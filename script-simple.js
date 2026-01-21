@@ -71,7 +71,9 @@ let config = {
   relativisticJets: false,
   hawkingRadiation: false,
   ergosphere: false,
-  frameDragging: false
+  frameDragging: false,
+  retroMode: false,
+  schrodingerMode: false
 };
 
 // Sistema de Partículas
@@ -195,6 +197,44 @@ class Particle {
     ctx.fill();
 
     ctx.restore();
+  }
+}
+
+// Easter Egg: Gato de Schrödinger - Partícula Especial
+class SchrodingerParticle extends Particle {
+  constructor() {
+    super();
+    this.exists = Math.random() > 0.5;
+    this.existenceTimer = 0;
+    this.existenceCycle = Math.random() * 1000 + 500; // Ciclo entre 0.5s e 1.5s
+    this.isSchrodinger = true;
+  }
+
+  draw() {
+    if (!this.exists) {
+      // Desenhar apenas um fantasma quando a partícula não existe
+      const dx = centerX - this.x;
+      const dy = centerY - this.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+
+      ctx.save();
+      ctx.globalAlpha = 0.2;
+      super.draw();
+      ctx.restore();
+      return;
+    }
+
+    super.draw();
+  }
+
+  update() {
+    // Alterna entre existência e não-existência
+    this.existenceTimer = (this.existenceTimer + 1) % this.existenceCycle;
+    this.exists = this.existenceTimer < this.existenceCycle * 0.7;
+
+    if (this.exists) {
+      super.update();
+    }
   }
 }
 
@@ -773,6 +813,201 @@ function setupControls() {
   document.getElementById('resetBtn').addEventListener('click', () => {
     location.reload();
   });
+
+  // ===== EASTER EGGS =====
+
+  // Easter Egg: Pressionar '42' - Referência ao Guia do Mochileiro das Galáxias
+  let lastKeySequence = '';
+  document.addEventListener('keydown', (e) => {
+    lastKeySequence += e.key;
+
+    // Manter apenas os últimos 2 caracteres
+    if (lastKeySequence.length > 2) {
+      lastKeySequence = lastKeySequence.slice(-2);
+    }
+
+    // Detectar '42'
+    if (lastKeySequence === '42' || e.key === '4' && document.activeElement === document.body) {
+      handleEasterEgg42();
+    }
+
+    // Detectar tecla 'R' para Modo Retro
+    if ((e.key === 'm' || e.key === 'M') && (e.ctrlKey || e.shiftKey)) {
+      toggleRetroMode();
+    }
+  });
+}
+
+// Easter Egg 42 - A Resposta para Tudo
+function handleEasterEgg42() {
+  console.log('🎯 A TOALHA está sendo sugada para o buraco negro!');
+
+  // Criar container para a toalha
+  const towelContainer = document.createElement('div');
+  towelContainer.id = 'towel42';
+  towelContainer.style.cssText = `
+    position: fixed;
+    top: 10%;
+    left: 50%;
+    width: 250px;
+    height: 250px;
+    transform: translate(-50%, -50%) rotate(0deg);
+    z-index: 9999;
+    pointer-events: none;
+    animation: towelSucked 2s ease-in forwards;
+  `;
+
+  // Criar imagem da toalha
+  const towelImg = document.createElement('img');
+  towelImg.src = 'imgs/toalha.png';
+  towelImg.style.cssText = `
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  `;
+  towelImg.onerror = () => console.error('Erro ao carregar toalha.png');
+
+  towelContainer.appendChild(towelImg);
+  document.body.appendChild(towelContainer);
+
+  // Adicionar estilos de animação
+  if (!document.getElementById('towel42Style')) {
+    const style = document.createElement('style');
+    style.id = 'towel42Style';
+    style.textContent = `
+      @keyframes towelSucked {
+        0% {
+          top: 10%;
+          left: 50%;
+          transform: translate(-50%, -50%) rotate(0deg) scale(1);
+          opacity: 1;
+        }
+        100% {
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%) rotate(1080deg) scale(0);
+          opacity: 0;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  // Remover elemento após animação
+  setTimeout(() => {
+    const towel = document.getElementById('towel42');
+    if (towel) towel.remove();
+  }, 2000);
+
+  // Efeito visual no buraco negro
+  config.lensStrength = Math.min(100, config.lensStrength + 40);
+  const originalGravity = config.gravityStrength;
+  const originalMass = config.blackHoleMass;
+  config.gravityStrength *= 1.5;
+  config.blackHoleMass *= 1.2;
+
+  setTimeout(() => {
+    config.lensStrength = Math.max(0, config.lensStrength - 40);
+    config.gravityStrength = originalGravity;
+    config.blackHoleMass = originalMass;
+  }, 2000);
+}
+
+// Easter Egg: Modo Retro - Visual Pixelado 8-bit
+function toggleRetroMode() {
+  config.retroMode = !config.retroMode;
+  const canvas = document.getElementById('blackHoleCanvas');
+  const webglCanvas = document.getElementById('webglCanvas');
+
+  if (config.retroMode) {
+    console.log('🎮 Modo Retro Ativado! 8-bit visual ativado!');
+
+    // Aplicar efeito retro com resolução reduzida e renderização pixelada
+    canvas.style.imageRendering = 'pixelated';
+    canvas.style.pixelated = 'pixelated';
+    canvas.style.webkitImageRendering = 'pixelated';
+    canvas.style.msInterpolationMode = 'nearest-neighbor';
+
+    if (webglCanvas) {
+      webglCanvas.style.imageRendering = 'pixelated';
+      webglCanvas.style.pixelated = 'pixelated';
+    }
+
+    // Aplicar classe retro ao corpo da página
+    document.body.classList.add('retro-mode-active');
+
+    // Notificação estilo terminal retro
+    const notification = document.createElement('div');
+    notification.id = 'retroNotification';
+    notification.style.cssText = `
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: rgba(0, 0, 0, 0.98);
+      color: #00ff00;
+      padding: 20px 30px;
+      border: 3px solid #00ff00;
+      border-radius: 0px;
+      font-size: 16px;
+      z-index: 9998;
+      font-family: 'Courier New', monospace;
+      text-shadow: 0 0 10px #00ff00, inset 0 0 5px rgba(0, 255, 0, 0.3);
+      animation: retroFlicker 0.15s infinite;
+      font-weight: bold;
+      letter-spacing: 2px;
+      box-shadow: 0 0 20px rgba(0, 255, 0, 0.5), inset 0 0 10px rgba(0, 255, 0, 0.2);
+    `;
+    notification.innerHTML = `
+      <div style="margin-bottom: 8px; font-size: 12px;">▼ ▲ ▼ ▲ ▼ ▲ ▼ ▲ ▼</div>
+      > RETRO MODE: ON<br/>
+      > 8-BIT ACTIVATED
+      <div style="margin-top: 8px; font-size: 12px;">▲ ▼ ▲ ▼ ▲ ▼ ▲ ▼ ▲</div>
+    `;
+    document.body.appendChild(notification);
+
+    // Adicionar estilos retro
+    if (!document.getElementById('retroModeStyle')) {
+      const style = document.createElement('style');
+      style.id = 'retroModeStyle';
+      style.textContent = `
+        @keyframes retroFlicker {
+          0% { opacity: 1; text-shadow: 0 0 10px #00ff00, inset 0 0 5px rgba(0, 255, 0, 0.3); }
+          50% { opacity: 0.95; text-shadow: 0 0 15px #00ff00, 0 0 25px #00ff00, inset 0 0 10px rgba(0, 255, 0, 0.5); }
+          100% { opacity: 1; text-shadow: 0 0 10px #00ff00, inset 0 0 5px rgba(0, 255, 0, 0.3); }
+        }
+        .retro-mode-active {
+          filter: none !important;
+        }
+        #blackHoleCanvas {
+          image-rendering: pixelated !important;
+          image-rendering: -moz-crisp-edges !important;
+          image-rendering: crisp-edges !important;
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
+    setTimeout(() => {
+      const notif = document.getElementById('retroNotification');
+      if (notif) notif.remove();
+    }, 4000);
+  } else {
+    console.log('🎮 Modo Retro Desativado!');
+    canvas.style.imageRendering = 'auto';
+    canvas.style.pixelated = 'auto';
+    canvas.style.webkitImageRendering = 'auto';
+    canvas.style.msInterpolationMode = 'auto';
+
+    if (webglCanvas) {
+      webglCanvas.style.imageRendering = 'auto';
+      webglCanvas.style.pixelated = 'auto';
+    }
+
+    document.body.classList.remove('retro-mode-active');
+
+    const notif = document.getElementById('retroNotification');
+    if (notif) notif.remove();
+  }
 }
 
 // Controle de visibilidade do painel
@@ -816,6 +1051,13 @@ window.addEventListener('resize', () => {
 
 initScene();
 setupControls();
+
+// Easter Egg: Adicionar partícula de Schrödinger aleatoriamente
+setInterval(() => {
+  if (Math.random() < 0.05 && particles.length < config.particleCount) {
+    particles.push(new SchrodingerParticle());
+  }
+}, 2000);
 
 // Inicializar WebGL Lens se está marcado por padrão
 if (document.getElementById('glslLens').checked) {
